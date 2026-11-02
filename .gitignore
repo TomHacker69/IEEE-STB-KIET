@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production build outputs
+dist/
+*/dist/
+.next/
+*/.next/
+out/
+*/out/
+*.tsbuildinfo
+*/*.tsbuildinfo
+
+# Local uploads
+backend/uploads/
+uploads/
+
+# Environment files and credentials
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env.local
+admin/.env.local
+*.env
+*.env.local
+!*.env.example
+!*/.env.example
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

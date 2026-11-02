@@ -1,0 +1,16 @@
+{
+  "name": "ieee-stb-portfolio-system",
+  "version": "1.0.0",
+  "description": "IEEE Student Branch Portfolio Website with Role-Based Admin System",
+  "scripts": {
+    "seed:superadmin": "npm run --prefix backend seed:superadmin",
+    "dev:backend": "npm run --prefix backend dev",
+    "dev:frontend": "npm run --prefix frontend dev",
+    "dev:admin": "npm run --prefix admin dev",
+    "build:backend": "npm run --prefix backend build",
+    "build:frontend": "npm run --prefix frontend build",
+    "build:admin": "npm run --prefix admin build",
+    "build:all": "npm run build:backend && npm run build:admin && npm run build:frontend"
+  }
+}
+
