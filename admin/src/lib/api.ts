@@ -1,6 +1,15 @@
 import { auth } from './firebase';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE = (() => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && !envUrl.includes('localhost')) {
+    return envUrl;
+  }
+  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined' && !window.location.hostname.includes('localhost')) {
+    return 'https://ieee-stb-kiet.onrender.com/api';
+  }
+  return envUrl || 'http://localhost:5000/api';
+})();
 
 export const getAuthToken = async (): Promise<string | null> => {
   if (typeof window !== 'undefined') {

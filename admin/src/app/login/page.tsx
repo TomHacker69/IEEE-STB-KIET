@@ -30,6 +30,8 @@ export default function LoginPage() {
     } catch (err: any) {
       if (err.code === 'auth/popup-closed-by-user') {
         setError('Sign in was cancelled.');
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setError('This domain is not yet authorized in Firebase Console. Please add this domain under Firebase Authentication > Settings > Authorized Domains.');
       } else {
         setError(err.message || 'Google sign-in failed.');
       }
@@ -57,6 +59,10 @@ export default function LoginPage() {
         setError('Invalid email or password. Please check your credentials.');
       } else if (err.code === 'auth/operation-not-allowed') {
         setError('Email sign-in was recently enabled. Please refresh the page and try again.');
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setError('This domain is not yet authorized in Firebase Console. Please add this domain under Firebase Authentication > Settings > Authorized Domains.');
+      } else if (err.code === 'auth/api-key-not-valid' || err.message?.includes('api-key-not-valid')) {
+        setError('Firebase API Key error. Please verify your Firebase project setup.');
       } else if (err.code === 'auth/user-not-found') {
         setError('No account found with this email.');
       } else {
