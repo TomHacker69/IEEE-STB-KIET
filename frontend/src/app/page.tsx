@@ -73,21 +73,33 @@ export default function HomePage() {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             {!heroContent.headline ? (
-              <div className="max-w-xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-md">
-                <Sparkles className="w-10 h-10 text-ieee-cyan mx-auto mb-4" />
-                <h2 className="text-xl font-bold text-white mb-2">Hero Section Not Configured</h2>
-                <p className="text-xs text-slate-300 leading-relaxed mb-6">
-                  Every text and headline is database-driven. Configure the Hero headline, subtitle, and buttons via the Admin Panel under <strong>Dynamic Site Content &gt; Hero Section</strong>.
+              <>
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-white/10 text-ieee-cyan backdrop-blur-sm mb-6 border border-white/10">
+                  <Sparkles className="w-3.5 h-3.5 text-ieee-cyan" />
+                  <span>IEEE Student Branch</span>
+                </div>
+                <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight sm:leading-none">
+                  Empowering Technical Innovation & Leadership
+                </h1>
+                <p className="mt-6 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
+                  KIET Group of Institutions Student Branch. Driving excellence across research, engineering, and student development.
                 </p>
-                <a
-                  href="http://localhost:3001/content"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-ieee-blue hover:bg-ieee-electric text-white shadow-lg transition"
-                >
-                  Configure in Admin Panel ↗
-                </a>
-              </div>
+                <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                  <Link
+                    href="/events"
+                    className="px-6 py-3.5 rounded-xl text-sm font-bold bg-ieee-blue hover:bg-ieee-electric text-white shadow-lg transition-all flex items-center gap-2"
+                  >
+                    <span>Explore Events</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="/recruitment"
+                    className="px-6 py-3.5 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20 transition-all"
+                  >
+                    Join Branch
+                  </Link>
+                </div>
+              </>
             ) : (
               <>
                 {heroContent.badge_text && (

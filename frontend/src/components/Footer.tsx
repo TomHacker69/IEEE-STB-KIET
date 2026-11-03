@@ -34,11 +34,7 @@ export const Footer: React.FC = () => {
               <p className="text-xs text-slate-400 leading-relaxed">
                 {branchName} {collegeName ? `at ${collegeName}.` : ''} {departmentName ? `Operating proudly under the ${departmentName}.` : ''}
               </p>
-            ) : (
-              <p className="text-xs text-slate-500 italic">
-                Branch details not configured. Configure via Admin Panel &gt; Dynamic Site Content &gt; Footer.
-              </p>
-            )}
+            ) : null}
             {disclaimer && (
               <p className="text-[11px] text-slate-500 italic">
                 {disclaimer}
@@ -98,42 +94,28 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Contact Details */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Branch Contact</h4>
-            <div className="space-y-2 text-xs text-slate-400">
-              {address && (
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-ieee-cyan shrink-0 mt-0.5" />
-                  <span>{address}</span>
-                </div>
-              )}
-              {email && (
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-ieee-cyan shrink-0" />
-                  <a href={`mailto:${email}`} className="hover:text-white transition">
-                    {email}
-                  </a>
-                </div>
-              )}
-              {!address && !email && (
-                <p className="text-xs text-slate-500 italic">
-                  Branch contact details updating soon.
-                </p>
-              )}
+          {/* Contact Details (rendered only when contact info is provided) */}
+          {(address || email) && (
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider">Branch Contact</h4>
+              <div className="space-y-2 text-xs text-slate-400">
+                {address && (
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-4 h-4 text-ieee-cyan shrink-0 mt-0.5" />
+                    <span>{address}</span>
+                  </div>
+                )}
+                {email && (
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-ieee-cyan shrink-0" />
+                    <a href={`mailto:${email}`} className="hover:text-white transition">
+                      {email}
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
-
-            <div className="pt-2">
-              <a
-                href="http://localhost:3001"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-slate-300 hover:text-white hover:border-slate-700 transition"
-              >
-                <span>Admin Portal Login</span> ↗
-              </a>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Bottom Bar & Developers Credit */}
