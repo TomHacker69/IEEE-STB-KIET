@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut as fbSignOut,
   onAuthStateChanged,
   User as FirebaseUser,
@@ -44,6 +46,7 @@ interface AuthContextType {
   isSuperAdmin: boolean;
   loading: boolean;
   login: (email: string, pass: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   loginDevSuperAdmin: () => Promise<void>;
   logout: () => Promise<void>;
   hasPermission: (section: string, action?: keyof SectionPermissions) => boolean;
@@ -99,6 +102,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithGoogle = async () => {
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      await fetchProfile();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loginDevSuperAdmin = async () => {
     setLoading(true);
     try {
@@ -142,6 +156,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isSuperAdmin,
         loading,
         login,
+        loginWithGoogle,
         loginDevSuperAdmin,
         logout,
         hasPermission,
