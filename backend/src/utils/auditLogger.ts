@@ -10,7 +10,10 @@ export const logAudit = async (
 ) => {
   try {
     const user = req.user;
-    const ipAddress = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '';
+    const ipAddress =
+      (req.headers && (req.headers['x-forwarded-for'] as string)) ||
+      (req.socket && req.socket.remoteAddress) ||
+      '';
 
     await AuditLog.create({
       userId: user?._id,
