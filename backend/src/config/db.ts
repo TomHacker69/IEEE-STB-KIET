@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 export const connectDB = async (): Promise<void> => {
-  const mongoUri = process.env.MONGODB_URI;
+  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
   if (!mongoUri) {
-    console.warn('⚠️ MONGODB_URI is not set. MongoDB operations will fail until configured.');
+    console.warn('⚠️ MONGODB_URI (or MONGO_URI) is not set. MongoDB operations will fail until configured.');
     return;
   }
 
