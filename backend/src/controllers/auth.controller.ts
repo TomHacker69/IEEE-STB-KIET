@@ -86,23 +86,31 @@ export const createSubAdmin = async (req: AuthenticatedRequest, res: Response) =
     }
 
     const auth = getAuth();
-    let firebaseUser;
+    let firebaseUser: { uid: string };
 
     try {
       // Check if user already exists in Firebase Auth
-      firebaseUser = await auth.getUserByEmail(email);
+      const existingFbUser = await auth.getUserByEmail(email);
       // Update password
-      await auth.updateUser(firebaseUser.uid, {
+      await auth.updateUser(existingFbUser.uid, {
         password,
         displayName: name,
       });
-    } catch {
-      // Create new user in Firebase Auth
-      firebaseUser = await auth.createUser({
-        email,
-        password,
-        displayName: name,
-      });
+      firebaseUser = existingFbUser;
+    } catch (fbErr: any) {
+      if (fbErr.code === 'auth/user-not-found') {
+        // Create new user in Firebase Auth
+        firebaseUser = await auth.createUser({
+          email,
+          password,
+          displayName: name,
+        });
+      } else if (fbErr.code === 'app/invalid-credential' || fbErr.message?.includes('credential')) {
+        console.warn('⚠️ Firebase Admin service account key not configured. Creating local sub-admin record.');
+        firebaseUser = { uid: `subadmin-${Date.now()}` };
+      } else {
+        throw fbErr;
+      }
     }
 
     let user = await User.findOne({ firebaseUid: firebaseUser.uid });

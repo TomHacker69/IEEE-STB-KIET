@@ -28,10 +28,10 @@ export const initFirebase = (): admin.app.App => {
       });
       console.log('✅ Firebase Admin initialized via Environment Variables');
     } else {
-      // Default fallback for development/mocking
-      console.warn('⚠️ Firebase Admin credentials not provided in .env. Auth verification requires Firebase credentials.');
+      // Default fallback using project ID
+      console.warn('⚠️ Firebase Admin service account key not provided in .env. Initializing with project ID for token verification.');
       firebaseApp = admin.initializeApp({
-        projectId: process.env.FIREBASE_PROJECT_ID || 'ieee-stb-kiet-placeholder'
+        projectId: process.env.FIREBASE_PROJECT_ID || 'ieee-stb-kiet-afc25'
       });
     }
   } catch (error) {
