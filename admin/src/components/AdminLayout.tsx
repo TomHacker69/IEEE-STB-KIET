@@ -159,14 +159,18 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
         <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-white text-lg tracking-wider">IEEE STB</span>
-              <span className="bg-ieee-blue text-[10px] text-white px-2 py-0.5 rounded-full font-bold uppercase">
-                Admin
-              </span>
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.jpg" alt="IEEE Logo" className="h-10 w-auto object-contain rounded-lg shadow-sm" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-white text-base tracking-wider">IEEE STB</span>
+                <span className="bg-ieee-blue text-[9px] text-white px-2 py-0.5 rounded-full font-bold uppercase">
+                  Admin
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-0.5">Management Portal</p>
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">Management & RBAC Portal</p>
           </div>
         </div>
 

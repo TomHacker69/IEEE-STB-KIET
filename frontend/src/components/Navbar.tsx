@@ -20,8 +20,8 @@ export const Navbar: React.FC = () => {
   const brandingContent = dict.branding || {};
 
   const brandTitle = brandingContent.branch_name || navbarContent.brand_title || 'IEEE Student Branch';
-  const collegeName = brandingContent.college_name || navbarContent.college_name || '';
-  const logoUrl = brandingContent.logo_url || '';
+  const collegeName = brandingContent.college_name || navbarContent.college_name || 'KIET Group of Institutions';
+  const logoUrl = brandingContent.logo_url || '/logo.jpg';
 
   const navLinks = [
     { label: navbarContent.nav_home || 'Home', href: '/' },
@@ -40,14 +40,8 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center gap-3 group">
-            {logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt={brandTitle} className="h-10 w-auto object-contain" />
-            ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-ieee-blue to-ieee-dark flex items-center justify-center text-white font-extrabold text-sm shadow-md group-hover:scale-105 transition">
-                IEEE
-              </div>
-            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logoUrl} alt={brandTitle} className="h-11 w-auto object-contain rounded-lg" />
             <div>
               <span className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight block leading-tight group-hover:text-ieee-blue transition">
                 {brandTitle}

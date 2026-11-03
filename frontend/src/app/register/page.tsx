@@ -69,9 +69,12 @@ export default function MemberRegisterPage() {
     <div className="py-20 bg-slate-50 min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 sm:p-10">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-ieee-blue flex items-center justify-center mx-auto mb-3 font-extrabold text-lg">
-            IEEE
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.jpg"
+            alt="IEEE Logo"
+            className="h-14 w-auto object-contain mx-auto mb-3 rounded-xl shadow-sm border border-slate-200"
+          />
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Create Member Account</h1>
           <p className="text-xs text-slate-500 mt-1">
             Access your verified membership status, event certificates, and participation records

@@ -26,9 +26,13 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-900">
           {/* Branch Bio */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-white text-lg tracking-wider">IEEE</span>
-              <span className="text-xs text-ieee-cyan font-bold tracking-widest uppercase">STB</span>
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.jpg" alt="IEEE Logo" className="h-9 w-auto object-contain rounded-lg" />
+              <div>
+                <span className="font-extrabold text-white text-base tracking-wider block">IEEE STB</span>
+                <span className="text-[10px] text-ieee-cyan font-bold tracking-widest uppercase block">KIET Branch</span>
+              </div>
             </div>
             {branchName || collegeName || departmentName ? (
               <p className="text-xs text-slate-400 leading-relaxed">

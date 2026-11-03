@@ -71,9 +71,12 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4">
       <div className="max-w-md w-full bg-slate-800 rounded-2xl shadow-xl border border-slate-700 p-8">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-ieee-blue/20 text-ieee-cyan mb-3">
-            <Lock className="w-7 h-7" />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.jpg"
+            alt="IEEE Logo"
+            className="h-16 w-auto object-contain mx-auto mb-4 rounded-xl shadow-md border border-slate-700"
+          />
           <h1 className="text-2xl font-bold text-white tracking-wide">IEEE STB Admin Portal</h1>
           <p className="text-sm text-slate-400 mt-1">
             Sign in with Super Admin or Sub-Admin credentials
