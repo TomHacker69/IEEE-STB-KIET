@@ -10,6 +10,9 @@
     "seed:superadmin": "tsx src/scripts/seedSuperAdmin.ts",
     "seed:admin": "tsx src/scripts/seedSuperAdmin.ts"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "cloudinary": "^2.0.1",
     "cors": "^2.8.5",
