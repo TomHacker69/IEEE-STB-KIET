@@ -164,3 +164,94 @@ export const deleteMember = async (req: AuthenticatedRequest, res: Response) => 
   }
 };
 
+export const batchImportMembers = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { members } = req.body;
+    if (!Array.isArray(members) || members.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'A non-empty "members" array is required for batch import.',
+      });
+    }
+
+    const imported = [];
+    const errors = [];
+
+    for (let i = 0; i < members.length; i++) {
+      const item = members[i];
+      if (!item.name || !item.name.trim()) {
+        errors.push(`Row ${i + 1}: Name is required`);
+        continue;
+      }
+
+      const email = item.email ? item.email.toLowerCase().trim() : '';
+      const designation = item.designation ? item.designation.trim() : 'Member';
+      const tier =
+        item.tier && ['core_team', 'regular_member', 'content_member'].includes(item.tier)
+          ? item.tier
+          : 'regular_member';
+      const department = item.department ? item.department.trim() : '';
+      const quote = tier === 'core_team' ? (item.quote || '').trim() : '';
+      const membershipId = item.membershipId
+        ? item.membershipId.trim()
+        : `IEEE-${Date.now().toString().slice(-6)}-${i + 1}`;
+
+      let member;
+      if (email) {
+        member = await Member.findOneAndUpdate(
+          { email },
+          {
+            $set: {
+              name: item.name.trim(),
+              designation,
+              tier,
+              department,
+              quote,
+              membershipId,
+              photoUrl: item.photoUrl || '',
+              socialLinks: item.socialLinks || {},
+              isActive: item.isActive !== undefined ? item.isActive : true,
+              orderIndex: item.orderIndex ?? i,
+            },
+          },
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+      } else {
+        member = await Member.create({
+          name: item.name.trim(),
+          designation,
+          tier,
+          department,
+          quote,
+          membershipId,
+          photoUrl: item.photoUrl || '',
+          socialLinks: item.socialLinks || {},
+          isActive: item.isActive !== undefined ? item.isActive : true,
+          orderIndex: item.orderIndex ?? i,
+        });
+      }
+
+      imported.push(member);
+    }
+
+    await logAudit(req, 'CREATE', 'members', 'batch', {
+      count: imported.length,
+      errorsCount: errors.length,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Successfully processed ${imported.length} members.${
+        errors.length > 0 ? ` Encountered ${errors.length} warnings.` : ''
+      }`,
+      data: {
+        importedCount: imported.length,
+        errors,
+        members: imported,
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+

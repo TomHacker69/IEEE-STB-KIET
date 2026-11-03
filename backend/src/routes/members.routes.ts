@@ -7,6 +7,7 @@ import {
   createMember,
   updateMember,
   deleteMember,
+  batchImportMembers,
 } from '../controllers/members.controller';
 
 const router = Router();
@@ -17,6 +18,7 @@ router.get('/', getPublicMembers);
 // Admin: Team & Member management
 router.get('/admin', authenticate, requirePermission('members', 'view'), getAllMembers);
 router.post('/', authenticate, requirePermission('members', 'create'), createMember);
+router.post('/batch-import', authenticate, requirePermission('members', 'create'), batchImportMembers);
 router.put('/:id', authenticate, requirePermission('members', 'edit'), updateMember);
 router.delete('/:id', authenticate, requirePermission('members', 'delete'), deleteMember);
 

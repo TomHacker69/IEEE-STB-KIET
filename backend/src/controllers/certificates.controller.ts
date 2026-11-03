@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from '../middleware/authMiddleware';
 import { Certificate } from '../models/Certificate';
 import { Participation } from '../models/Participation';
 import { MembershipRecord } from '../models/MembershipRecord';
+import { Member } from '../models/Member';
 import { User } from '../models/User';
 import { logAudit } from '../utils/auditLogger';
 
@@ -23,9 +24,24 @@ export const getMyCertificates = async (req: AuthenticatedRequest, res: Response
       .populate('eventId', 'title eventDate venue mode coverImage')
       .sort({ createdAt: -1 });
 
-    const membershipRecord = await MembershipRecord.findOne({
+    let membershipRecord: any = await MembershipRecord.findOne({
       $or: [{ userId: req.user._id }, { userEmail: req.user.email.toLowerCase() }],
     });
+
+    if (!membershipRecord) {
+      const memberDoc = await Member.findOne({ email: req.user.email.toLowerCase() });
+      if (memberDoc) {
+        membershipRecord = {
+          userName: memberDoc.name,
+          userEmail: memberDoc.email,
+          membershipId: memberDoc.membershipId || `IEEE-${memberDoc._id.toString().slice(-6).toUpperCase()}`,
+          designation: memberDoc.designation,
+          status: memberDoc.isActive ? 'active' : 'suspended',
+          startDate: memberDoc.createdAt,
+          endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        };
+      }
+    }
 
     return res.status(200).json({
       success: true,

@@ -2,6 +2,8 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
 import { User } from '../models/User';
 import { Role } from '../models/Role';
+import { Member } from '../models/Member';
+import { MembershipRecord } from '../models/MembershipRecord';
 import { getAuth } from '../config/firebase';
 import { logAudit } from '../utils/auditLogger';
 
@@ -12,9 +14,68 @@ export const getMe = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     const user = await User.findById(req.user._id).populate('roleId');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const emailLower = user.email.toLowerCase().trim();
+    const memberDoc = await Member.findOne({ email: emailLower });
+    const membershipRecord = await MembershipRecord.findOne({ userEmail: emailLower });
+
+    // A user is verified if they are in the Member roster, have a MembershipRecord, or are a SuperAdmin / SubAdmin
+    const isMember = Boolean(memberDoc || membershipRecord || user.isSuperAdmin || user.roleId);
+
+    if (!isMember) {
+      return res.status(403).json({
+        success: false,
+        isMember: false,
+        message: 'You are not a registered member of IEEE STB. Only verified members can access this portal.',
+      });
+    }
+
+    const isCoreMember = Boolean(memberDoc?.tier === 'core_team' || user.isSuperAdmin || user.roleId);
+    const designation =
+      memberDoc?.designation ||
+      (membershipRecord ? membershipRecord.designation : user.isSuperAdmin ? 'Super Administrator' : 'IEEE Member');
+    const tier = memberDoc?.tier || (user.isSuperAdmin ? 'core_team' : 'regular_member');
+
+    // Sync member roster details to user document if changed
+    if (memberDoc) {
+      let needsSave = false;
+      if (memberDoc.name && user.name !== memberDoc.name) {
+        user.name = memberDoc.name;
+        needsSave = true;
+      }
+      if (memberDoc.department && user.department !== memberDoc.department) {
+        user.department = memberDoc.department;
+        needsSave = true;
+      }
+      if (memberDoc.membershipId && user.membershipId !== memberDoc.membershipId) {
+        user.membershipId = memberDoc.membershipId;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    }
+
     return res.status(200).json({
       success: true,
-      data: user,
+      isMember: true,
+      isCoreMember,
+      data: {
+        _id: user._id,
+        firebaseUid: user.firebaseUid,
+        email: user.email,
+        name: user.name,
+        department: user.department || memberDoc?.department,
+        membershipId: user.membershipId || memberDoc?.membershipId || membershipRecord?.membershipId,
+        isSuperAdmin: user.isSuperAdmin,
+        isCoreMember,
+        designation,
+        tier,
+        memberDoc,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
@@ -33,12 +94,25 @@ export const syncUser = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(404).json({ success: false, message: 'User record not found' });
     }
 
+    const emailLower = user.email.toLowerCase().trim();
+    const memberDoc = await Member.findOne({ email: emailLower });
+    const membershipRecord = await MembershipRecord.findOne({ userEmail: emailLower });
+    const isMember = Boolean(memberDoc || membershipRecord || user.isSuperAdmin || user.roleId);
+
+    if (!isMember) {
+      return res.status(403).json({
+        success: false,
+        isMember: false,
+        message: 'You are not a registered member of IEEE STB. Only verified members can access this portal.',
+      });
+    }
+
     if (name) user.name = name;
     if (department) user.department = department;
     if (phone) user.phone = phone;
 
     await user.save();
-    return res.status(200).json({ success: true, data: user });
+    return res.status(200).json({ success: true, data: user, isMember: true });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
