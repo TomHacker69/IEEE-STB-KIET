@@ -8,7 +8,7 @@ import morgan from 'morgan';
 import path from 'path';
 import mongoose from 'mongoose';
 
-import { connectDB } from './config/db';
+import { connectDB, getDbStatus } from './config/db';
 import { initFirebase } from './config/firebase';
 import { initCloudinary } from './config/cloudinary';
 
@@ -69,12 +69,17 @@ app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Root & Health Check Endpoints
-app.get(['/', '/api'], (req: Request, res: Response) => {
+app.get(['/', '/api'], async (req: Request, res: Response) => {
+  if (mongoose.connection.readyState === 0) {
+    await connectDB().catch(() => {});
+  }
+  const db = getDbStatus();
   res.status(200).json({
     success: true,
     message: '🚀 IEEE STB KIET Backend API is live & operational',
-    version: '1.0.0',
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    version: '1.0.1',
+    database: db.status,
+    databaseDetails: db,
     timestamp: new Date().toISOString(),
     endpoints: {
       health: '/api/health',
@@ -91,11 +96,16 @@ app.get(['/', '/api'], (req: Request, res: Response) => {
   });
 });
 
-app.get('/api/health', (req: Request, res: Response) => {
+app.get('/api/health', async (req: Request, res: Response) => {
+  if (mongoose.connection.readyState === 0) {
+    await connectDB().catch(() => {});
+  }
+  const db = getDbStatus();
   res.status(200).json({
     status: 'ok',
     service: 'IEEE Student Branch REST API',
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    database: db.status,
+    databaseDetails: db,
     timestamp: new Date().toISOString(),
   });
 });
