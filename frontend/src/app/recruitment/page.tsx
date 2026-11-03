@@ -10,6 +10,10 @@ import {
   Sparkles,
   Send,
   Clock,
+  Bell,
+  Linkedin,
+  Instagram,
+  Calendar,
 } from 'lucide-react';
 import { fetcher, api } from '../../lib/api';
 import { useAuth } from '../../context/AuthContext';
@@ -98,23 +102,41 @@ export default function RecruitmentPage() {
             <div className="w-8 h-8 border-4 border-ieee-blue border-t-transparent rounded-full animate-spin" />
           </div>
         ) : !isOpen ? (
-          <div className="bg-white rounded-3xl p-10 border border-slate-200 text-center shadow-sm max-w-xl mx-auto">
-            <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center mx-auto mb-4">
-              <Clock className="w-8 h-8" />
+          <div className="bg-white rounded-3xl p-10 sm:p-14 border border-slate-200 text-center shadow-lg max-w-xl mx-auto space-y-6">
+            <div className="w-20 h-20 rounded-3xl bg-blue-50 text-ieee-blue flex items-center justify-center mx-auto shadow-sm">
+              <Bell className="w-10 h-10 animate-bounce" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">
-              Recruitment Drive is Currently Closed
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto mb-6">
-              Our official recruitment window is paused right now. Stay tuned on our social media and
-              event sessions for the announcement of the next induction cycle!
+
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full inline-block mb-3 border border-amber-200">
+                Membership Drive Closed
+              </span>
+              <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+                Recruitment Drive Currently Closed
+              </h3>
+            </div>
+
+            <p className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+              You will be notified when the membership opportunity will be open for you all guys, till
+              then keep an eye on your inbox.
             </p>
-            <a
-              href="http://localhost:3000/social"
-              className="inline-flex items-center px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-ieee-blue hover:bg-ieee-dark transition shadow-sm"
-            >
-              Follow Our Live Highlights
-            </a>
+
+            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a
+                href="/events"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+              >
+                <Calendar className="w-4 h-4" />
+                Explore Upcoming Events
+              </a>
+              <a
+                href="/social"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-ieee-blue hover:bg-ieee-dark transition shadow-sm"
+              >
+                <Instagram className="w-4 h-4" />
+                Stay Updated on Social
+              </a>
+            </div>
           </div>
         ) : submitted ? (
           <div className="bg-white rounded-3xl p-12 border border-emerald-200 text-center shadow-md max-w-lg mx-auto">

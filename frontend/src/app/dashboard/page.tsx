@@ -100,6 +100,42 @@ export default function MemberDashboardPage() {
           </div>
         </div>
 
+        {/* Core Member Executive Switcher */}
+        {user.isCoreMember && (
+          <div className="bg-gradient-to-r from-amber-500/15 via-blue-500/10 to-indigo-500/15 border-2 border-amber-400/60 rounded-3xl p-6 sm:p-7 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-xl shadow shrink-0">
+                ★
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-800 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
+                    Executive Core Team
+                  </span>
+                  <span className="text-xs font-bold text-slate-700">
+                    {user.designation || 'Lead Coordinator'}
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mt-1">
+                  You have administrative privileges for the IEEE Student Branch.
+                </h3>
+                <p className="text-xs text-slate-600">
+                  Manage your branch domain, review submissions, and publish records from the dedicated admin dashboard.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="http://localhost:3001"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition shadow shrink-0"
+            >
+              Open Lead Admin Panel <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        )}
+
         {/* 1. MEMBERSHIP DETAILS (Intentionally Minimal) */}
         <div className="bg-gradient-to-br from-slate-900 to-ieee-dark rounded-3xl p-8 text-white shadow-lg relative overflow-hidden">
           <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-radial-gradient opacity-10 pointer-events-none" />

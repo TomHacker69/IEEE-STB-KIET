@@ -21,6 +21,11 @@ export interface UserProfile {
   name: string;
   department?: string;
   membershipId?: string;
+  isSuperAdmin?: boolean;
+  isCoreMember?: boolean;
+  designation?: string;
+  tier?: string;
+  memberDoc?: any;
 }
 
 interface AuthContextType {
@@ -31,7 +36,7 @@ interface AuthContextType {
   register: (email: string, pass: string, name: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
+  refreshProfile: () => Promise<UserProfile | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,14 +46,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async () => {
+  const fetchProfile = async (): Promise<UserProfile | null> => {
     try {
       const res = await api.get('/auth/me');
       if (res.success && res.data) {
         setUser(res.data);
+        return res.data;
       }
-    } catch {
+      return null;
+    } catch (err: any) {
+      const msg = err.message || '';
+      if (msg.includes('not a registered member') || err.status === 403) {
+        await fbSignOut(auth).catch(() => {});
+        setUser(null);
+        setFbUser(null);
+        throw new Error('You are not a registered member of IEEE STB. Only verified members can access this portal.');
+      }
       setUser(null);
+      return null;
     }
   };
 
@@ -56,7 +71,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setFbUser(currentUser);
       if (currentUser) {
-        await fetchProfile();
+        try {
+          await fetchProfile();
+        } catch {
+          // If rejected by member gate, state is reset
+        }
       } else {
         setUser(null);
       }
@@ -71,6 +90,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await signInWithEmailAndPassword(auth, email, pass);
       await fetchProfile();
+    } catch (err: any) {
+      await fbSignOut(auth).catch(() => {});
+      setUser(null);
+      setFbUser(null);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -81,9 +105,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, pass);
       await updateProfile(cred.user, { displayName: name });
-      // Sync user into Mongo
+      // Sync user into Mongo (verifies member status)
       await api.post('/auth/sync', { name });
       await fetchProfile();
+    } catch (err: any) {
+      await fbSignOut(auth).catch(() => {});
+      setUser(null);
+      setFbUser(null);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -96,6 +125,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const cred = await signInWithPopup(auth, provider);
       await api.post('/auth/sync', { name: cred.user.displayName || '' });
       await fetchProfile();
+    } catch (err: any) {
+      await fbSignOut(auth).catch(() => {});
+      setUser(null);
+      setFbUser(null);
+      throw err;
     } finally {
       setLoading(false);
     }

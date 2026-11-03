@@ -74,14 +74,30 @@ export default function MemberRegisterPage() {
           </div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Create Member Account</h1>
           <p className="text-xs text-slate-500 mt-1">
-            Register to view issued certificates, submit event registrations, and track membership status
+            Access your verified membership status, event certificates, and participation records
           </p>
+          <div className="mt-3 inline-block px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[11px] text-ieee-blue font-semibold">
+            Restricted to verified IEEE STB Members
+          </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
-            <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-            <p className="text-xs text-red-700 leading-relaxed">{error}</p>
+          <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 space-y-2">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <p className="text-xs font-semibold text-red-700 leading-relaxed">{error}</p>
+            </div>
+            {error.includes('not a registered member') && (
+              <div className="pt-2 border-t border-red-100 flex items-center justify-between">
+                <span className="text-[11px] text-red-600">Want to join IEEE STB?</span>
+                <Link
+                  href="/recruitment"
+                  className="text-xs font-bold text-ieee-blue hover:underline inline-flex items-center gap-1"
+                >
+                  Join Branch ↗
+                </Link>
+              </div>
+            )}
           </div>
         )}
 
