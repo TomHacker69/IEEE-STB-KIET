@@ -1,15 +1,21 @@
 import { auth } from './firebase';
 
-const API_BASE = (() => {
+export const getApiBaseUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isLocal) {
+      return 'https://ieee-stb-kiet.onrender.com/api';
+    }
+  }
   const envUrl = process.env.NEXT_PUBLIC_API_URL;
   if (envUrl && !envUrl.includes('localhost')) {
     return envUrl;
   }
-  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined' && !window.location.hostname.includes('localhost')) {
+  if (process.env.NODE_ENV === 'production') {
     return 'https://ieee-stb-kiet.onrender.com/api';
   }
   return envUrl || 'http://localhost:5000/api';
-})();
+};
 
 export const getAuthToken = async (): Promise<string | null> => {
   if (!auth.currentUser) return null;
@@ -17,7 +23,8 @@ export const getAuthToken = async (): Promise<string | null> => {
 };
 
 export const fetcher = async (url: string) => {
-  const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
+  const base = getApiBaseUrl();
+  const fullUrl = url.startsWith('http') ? url : `${base}${url}`;
   const res = await fetch(fullUrl, {
     cache: 'no-store', // Real-time fresh fetching (no stale static cache)
   });
@@ -40,7 +47,8 @@ export const authenticatedFetch = async (endpoint: string, options: RequestInit 
     headers.set('Content-Type', 'application/json');
   }
 
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+  const base = getApiBaseUrl();
+  const url = endpoint.startsWith('http') ? endpoint : `${base}${endpoint}`;
   const response = await fetch(url, {
     ...options,
     headers,
@@ -67,5 +75,10 @@ export const api = {
       method: 'PUT',
       body: body instanceof FormData ? body : JSON.stringify(body),
     }),
+  patch: (endpoint: string, body?: any) =>
+    authenticatedFetch(endpoint, {
+      method: 'PATCH',
+      body: body instanceof FormData ? body : JSON.stringify(body),
+    }),
+  delete: (endpoint: string) => authenticatedFetch(endpoint, { method: 'DELETE' }),
 };
-

@@ -65,10 +65,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.get('/auth/me');
       if (res.success && res.data) {
         setUser(res.data);
+        return res.data;
       }
+      throw new Error(res.message || 'Failed to load user profile');
     } catch (err) {
       console.error('Failed to load user profile from backend:', err);
       setUser(null);
+      throw err;
     }
   };
 
