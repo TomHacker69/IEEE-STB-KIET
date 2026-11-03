@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { Lock, Mail, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, loginWithGoogle, loginDevSuperAdmin, user, loading } = useAuth();
+  const { login, loginWithGoogle, user, loading } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -176,35 +176,6 @@ export default function LoginPage() {
           )}
           <span>Continue with Google</span>
         </button>
-
-        <div className="relative my-3 flex items-center justify-center">
-          <div className="border-t border-slate-700/60 w-full" />
-        </div>
-
-        <button
-          type="button"
-          onClick={async () => {
-            setSubmitting(true);
-            try {
-              await loginDevSuperAdmin();
-              router.push('/dashboard');
-            } catch (err: any) {
-              setError(err.message || 'Demo session login failed');
-            } finally {
-              setSubmitting(false);
-            }
-          }}
-          className="w-full bg-slate-700/60 hover:bg-slate-700 text-ieee-cyan font-semibold py-2.5 px-4 rounded-lg text-xs transition border border-slate-600 flex items-center justify-center gap-2"
-        >
-          <Sparkles className="w-4 h-4" />
-          <span>One-Click Explore Session (Super Admin)</span>
-        </button>
-
-        <div className="mt-8 pt-6 border-t border-slate-700/60 text-center">
-          <p className="text-xs text-slate-400">
-            Initial setup? Run the seed script: <code className="text-ieee-cyan">npm run seed:superadmin</code>
-          </p>
-        </div>
       </div>
     </div>
   );
