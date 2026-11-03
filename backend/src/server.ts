@@ -6,6 +6,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
+import mongoose from 'mongoose';
 
 import { connectDB } from './config/db';
 import { initFirebase } from './config/firebase';
@@ -67,11 +68,34 @@ app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 // Serve uploaded media in local development mode
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// Health Check
+// Root & Health Check Endpoints
+app.get(['/', '/api'], (req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: '🚀 IEEE STB KIET Backend API is live & operational',
+    version: '1.0.0',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/api/health',
+      events: '/api/events',
+      members: '/api/members',
+      activities: '/api/activities',
+      content: '/api/content',
+      research: '/api/research',
+      sections: '/api/sections',
+      sponsors: '/api/sponsors',
+      social: '/api/social',
+      recruitment: '/api/recruitment',
+    },
+  });
+});
+
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
     service: 'IEEE Student Branch REST API',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     timestamp: new Date().toISOString(),
   });
 });
