@@ -91,23 +91,6 @@ export default function MembersPage() {
     fetchMembers();
   }, []);
 
-  const loadBatchSample = () => {
-    setBatchRawText(
-`Aryan Sharma, aryan.sharma@kiet.edu, Chairperson, ECE, core_team, Inspiring future engineers through IEEE.
-Priya Verma, priya.verma@kiet.edu, Vice Chairperson, CSE, core_team, Driving innovation and technical excellence.
-Rahul Gupta, rahul.gupta@kiet.edu, Secretary, IT, core_team, Empowering every student to build and lead.
-Sneha Patel, sneha.patel@kiet.edu, Membership Lead, ECE, core_team, Connecting passionate minds to global IEEE opportunities.
-Ankit Tomar, ankit.tomar@kiet.edu, Web & Tech Lead, CSE, core_team, Building scalable digital platforms for our student branch.
-Rohan Mehta, rohan.mehta@kiet.edu, Social Media Head, MCA, core_team, Bringing IEEE stories and events to life.
-Kavita Joshi, kavita.joshi@kiet.edu, Research Lead, ECE, core_team, Fostering high-impact scientific publications.
-Aman Singh, aman.singh@kiet.edu, Technical Associate, CSE, regular_member
-Simran Kaur, simran.kaur@kiet.edu, Event Coordinator, IT, regular_member
-Vikas Pandey, vikas.pandey@kiet.edu, Robotics Coordinator, ME, regular_member
-Neha Sharma, neha.sharma@kiet.edu, Content Strategist, ECE, content_member
-Tarun Verma, tarun.verma@kiet.edu, Graphics Designer, CSE, content_member`
-    );
-  };
-
   const handleBatchImport = async () => {
     if (!batchRawText.trim()) {
       alert('Please paste or enter member rows.');
@@ -637,23 +620,14 @@ Tarun Verma, tarun.verma@kiet.edu, Graphics Designer, CSE, content_member`
               </div>
 
               <div className="my-5 space-y-4">
-                <div className="p-4 bg-blue-50/70 border border-blue-100 rounded-xl space-y-2 text-xs text-slate-700">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-ieee-blue">CSV Line Format:</span>
-                    <button
-                      type="button"
-                      onClick={loadBatchSample}
-                      className="px-2.5 py-1 bg-white hover:bg-blue-100/50 text-ieee-blue rounded-md border border-blue-200 font-semibold transition"
-                    >
-                      Insert Starter Template (~12 Members)
-                    </button>
-                  </div>
-                  <code className="block bg-white p-2 rounded border border-blue-200 font-mono text-[11px] text-slate-800">
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs text-slate-700">
+                  <span className="font-bold text-slate-800">CSV Row Format (One member per line):</span>
+                  <code className="block bg-white p-2.5 rounded border border-slate-200 font-mono text-[11px] text-slate-800">
                     FullName, Email, Designation, Department, Tier, [Quote]
                   </code>
                   <p className="text-[11px] text-slate-500">
-                    * Tier must be: <code>core_team</code>, <code>regular_member</code>, or <code>content_member</code>.
-                    Registered emails are automatically authorized to log into the Member Portal.
+                    * Tier must be: <code>core_team</code>, <code>regular_member</code>, or <code>content_member</code>.<br />
+                    * Quotes are reserved for <code>core_team</code>. Registered emails are automatically authorized to log into the Member Portal.
                   </p>
                 </div>
 
@@ -682,7 +656,7 @@ Tarun Verma, tarun.verma@kiet.edu, Graphics Designer, CSE, content_member`
                     rows={12}
                     value={batchRawText}
                     onChange={(e) => setBatchRawText(e.target.value)}
-                    placeholder="Aryan Sharma, aryan@kiet.edu, Chairperson, ECE, core_team&#10;Priya Singh, priya@kiet.edu, Secretary, CSE, core_team"
+                    placeholder="FullName, Email, Designation, Department, Tier, [Quote]&#10;FullName, Email, Designation, Department, Tier"
                     className="w-full border border-slate-300 rounded-xl p-3 font-mono text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
                   />
                 </div>
