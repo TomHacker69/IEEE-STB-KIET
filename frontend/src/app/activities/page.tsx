@@ -12,7 +12,7 @@ export default function ActivitiesPage() {
   const activities = actRes?.data || [];
 
   return (
-    <div className="py-16 bg-slate-50 min-h-screen">
+    <div className="py-16 bg-[#e8edf5] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badge="Branch Activities"
@@ -37,12 +37,12 @@ export default function ActivitiesPage() {
               return (
                 <div
                   key={act._id}
-                  className={`bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col ${
+                  className={`neu-card rounded-3xl border border-white/60 overflow-hidden flex flex-col ${
                     isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'
-                  } items-stretch gap-0`}
+                  } items-stretch gap-0 hover:shadow-[-10px_-10px_20px_#ffffff,10px_10px_20px_#c4d0e0] transition-all duration-300`}
                 >
                   {/* Photo Section */}
-                  <div className="lg:w-1/2 min-h-[280px] bg-slate-100 relative overflow-hidden">
+                  <div className="lg:w-1/2 min-h-[280px] bg-[#e8edf5] relative overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.08)]">
                     {act.images && act.images.length > 0 ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -60,28 +60,28 @@ export default function ActivitiesPage() {
                   {/* Text Content */}
                   <div className="lg:w-1/2 p-8 sm:p-10 flex flex-col justify-between">
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-ieee-blue">
-                        <Calendar className="w-4 h-4" />
+                      <div className="flex items-center gap-2 text-xs font-bold text-ieee-blue neu-pill px-3 py-1 w-fit">
+                        <Calendar className="w-3.5 h-3.5" />
                         <span>{new Date(act.date).toLocaleDateString()}</span>
                       </div>
 
-                      <h3 className="text-2xl font-bold text-slate-900 leading-snug">
+                      <h3 className="text-2xl font-extrabold text-slate-800 leading-snug">
                         {act.title}
                       </h3>
 
-                      <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+                      <p className="text-sm text-slate-600 font-medium leading-relaxed whitespace-pre-line">
                         {act.description}
                       </p>
                     </div>
 
                     {act.tags && act.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 pt-6 border-t border-slate-100 mt-6">
+                      <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-300/40 mt-6">
                         {act.tags.map((tag: string, i: number) => (
                           <span
                             key={i}
-                            className="inline-flex items-center gap-1 text-xs font-semibold bg-blue-50 text-ieee-blue px-2.5 py-1 rounded-md"
+                            className="neu-pill inline-flex items-center gap-1.5 text-xs font-bold text-ieee-blue px-3 py-1.5"
                           >
-                            <Tag className="w-3 h-3" />
+                            <Tag className="w-3 h-3 text-ieee-cyan" />
                             <span>{tag}</span>
                           </span>
                         ))}
@@ -97,4 +97,3 @@ export default function ActivitiesPage() {
     </div>
   );
 }
-

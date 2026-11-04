@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, User, LogOut, LayoutDashboard, ChevronRight } from 'lucide-react';
+import { Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import useSWR from 'swr';
 import { fetcher } from '../lib/api';
@@ -35,15 +35,17 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all">
+    <header className="sticky top-0 z-50 bg-[#e8edf5]/95 backdrop-blur-md border-b border-white/80 shadow-[0_4px_16px_#c5d0e0] transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-3 group">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logoUrl} alt={brandTitle} className="h-11 w-auto object-contain rounded-lg" />
+          {/* Logo & Brand in tactile well */}
+          <Link href="/" className="flex items-center gap-3.5 group">
+            <div className="p-1.5 rounded-2xl bg-[#e8edf5] shadow-[4px_4px_8px_#c5d0e0,-4px_4px_8px_#ffffff] border border-white/80 transition-transform group-hover:scale-105">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={logoUrl} alt={brandTitle} className="h-10 w-auto object-contain rounded-xl" />
+            </div>
             <div>
-              <span className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight block leading-tight group-hover:text-ieee-blue transition">
+              <span className="font-extrabold text-slate-800 text-base sm:text-lg tracking-tight block leading-tight group-hover:text-ieee-blue transition">
                 {brandTitle}
               </span>
               {collegeName && (
@@ -54,18 +56,18 @@ export const Navbar: React.FC = () => {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          {/* Desktop Nav Links in Neumorphic container */}
+          <nav className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#e8edf5] shadow-[inset_3px_3px_6px_#c5d0e0,inset_-3px_-3px_6px_#ffffff] border border-white/60">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'text-ieee-blue bg-blue-50/80 font-bold'
-                      : 'text-slate-600 hover:text-ieee-blue hover:bg-slate-50'
+                      ? 'bg-[#e8edf5] text-ieee-blue shadow-[3px_3px_6px_#c5d0e0,-3px_-3px_6px_#ffffff] font-bold border border-white/80'
+                      : 'text-slate-600 hover:text-ieee-blue hover:shadow-[2px_2px_5px_#c5d0e0,-2px_-2px_5px_#ffffff]'
                   }`}
                 >
                   {link.label}
@@ -80,7 +82,7 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-blue-50 text-ieee-blue hover:bg-blue-100 border border-blue-200 transition"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-ieee-blue bg-[#e8edf5] shadow-[4px_4px_10px_#c5d0e0,-4px_-4px_10px_#ffffff] hover:shadow-[2px_2px_5px_#c5d0e0,-2px_-2px_5px_#ffffff] border border-white/80 transition"
                 >
                   <LayoutDashboard className="w-3.5 h-3.5" />
                   <span>Dashboard</span>
@@ -88,22 +90,22 @@ export const Navbar: React.FC = () => {
                 <button
                   onClick={() => logout()}
                   title="Sign Out"
-                  className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-slate-50 transition"
+                  className="p-2.5 rounded-xl text-slate-500 hover:text-red-500 bg-[#e8edf5] shadow-[4px_4px_8px_#c5d0e0,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#c5d0e0,inset_-2px_-2px_4px_#ffffff] border border-white/80 transition"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <Link
                   href="/login"
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-ieee-blue transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-700 hover:text-ieee-blue rounded-xl bg-[#e8edf5] shadow-[4px_4px_8px_#c5d0e0,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_5px_#c5d0e0,-2px_-2px_5px_#ffffff] border border-white/80 transition"
                 >
                   {navbarContent.login_button_text || 'Log In'}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-4 py-2 text-xs font-bold text-white bg-ieee-blue hover:bg-ieee-dark rounded-lg shadow-sm transition"
+                  className="px-4 py-2 text-xs font-bold text-white rounded-xl neu-btn-primary transition shadow-md"
                 >
                   {navbarContent.register_button_text || 'Join Branch'}
                 </Link>
@@ -115,7 +117,7 @@ export const Navbar: React.FC = () => {
           <div className="lg:hidden flex items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              className="p-2.5 rounded-xl text-slate-600 bg-[#e8edf5] shadow-[4px_4px_8px_#c5d0e0,-4px_-4px_8px_#ffffff] border border-white/80"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -125,24 +127,24 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Nav Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2 shadow-lg">
+        <div className="lg:hidden bg-[#e8edf5] border-t border-white/80 px-4 pt-3 pb-6 space-y-2 shadow-[0_8px_20px_#c5d0e0]">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-ieee-blue"
+              className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-ieee-blue hover:shadow-[inset_2px_2px_5px_#c5d0e0,inset_-2px_-2px_5px_#ffffff] transition"
             >
               {link.label}
             </Link>
           ))}
-          <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
+          <div className="pt-4 border-t border-slate-300/40 flex flex-col gap-2.5">
             {user ? (
               <div className="space-y-2">
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-2.5 text-center text-xs font-bold bg-blue-50 text-ieee-blue rounded-lg block"
+                  className="w-full py-2.5 text-center text-xs font-bold bg-[#e8edf5] text-ieee-blue shadow-[4px_4px_10px_#c5d0e0,-4px_-4px_10px_#ffffff] rounded-xl block border border-white/80"
                 >
                   Member Dashboard
                 </Link>
@@ -157,18 +159,18 @@ export const Navbar: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3 pt-2">
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-2.5 text-center text-xs font-semibold text-slate-700 border border-slate-200 rounded-lg"
+                  className="py-2.5 text-center text-xs font-semibold text-slate-700 bg-[#e8edf5] shadow-[4px_4px_8px_#c5d0e0,-4px_-4px_8px_#ffffff] rounded-xl border border-white/80"
                 >
                   Log In
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-2.5 text-center text-xs font-bold text-white bg-ieee-blue rounded-lg"
+                  className="py-2.5 text-center text-xs font-bold text-white neu-btn-primary rounded-xl"
                 >
                   Join Branch
                 </Link>
@@ -180,4 +182,3 @@ export const Navbar: React.FC = () => {
     </header>
   );
 };
-

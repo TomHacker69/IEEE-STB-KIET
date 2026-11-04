@@ -23,7 +23,7 @@ export default function ResearchPage() {
   });
 
   return (
-    <div className="py-16 bg-slate-50 min-h-screen">
+    <div className="py-16 bg-[#e8edf5] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badge="Scholarly Publications"
@@ -31,16 +31,16 @@ export default function ResearchPage() {
           subtitle="Peer-reviewed publications, IEEE conference proceedings, and journal papers authored by members and faculty advisors."
         />
 
-        {/* Search Bar */}
-        <div className="max-w-md mx-auto mb-10">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+        {/* Neumorphic Search Bar */}
+        <div className="max-w-md mx-auto mb-12">
+          <div className="relative neu-inset rounded-2xl">
+            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by paper title, author, or venue..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
             />
           </div>
         </div>
@@ -57,41 +57,41 @@ export default function ResearchPage() {
             description="Our student branch research cell regularly publishes findings in IEEE Xplore. Verified papers will appear here."
           />
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {filtered.map((paper: any) => (
               <div
                 key={paper._id}
-                className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm hover:shadow-md transition space-y-4"
+                className="neu-card rounded-3xl border border-white/60 p-6 sm:p-8 space-y-4 hover:shadow-[-10px_-10px_20px_#ffffff,10px_10px_20px_#c4d0e0] transition-all duration-300"
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-ieee-blue bg-blue-50 px-2.5 py-1 rounded-md">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-xs font-bold text-ieee-blue neu-pill px-3 py-1">
                       {paper.year}
                     </span>
-                    <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md">
+                    <span className="text-xs font-semibold text-slate-700 neu-pill px-3 py-1">
                       {paper.venue}
                     </span>
                   </div>
 
                   {paper.doi && (
-                    <span className="font-mono text-[11px] text-slate-400">DOI: {paper.doi}</span>
+                    <span className="font-mono text-[11px] text-slate-500 font-medium">DOI: {paper.doi}</span>
                   )}
                 </div>
 
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                <h3 className="text-lg sm:text-xl font-extrabold text-slate-800 leading-snug">
                   {paper.title}
                 </h3>
 
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-slate-600 font-medium">
                   <span className="font-bold text-slate-800">Authors: </span>
                   {Array.isArray(paper.authors) ? paper.authors.join(', ') : paper.authors}
                 </p>
 
                 {paper.abstract && (
-                  <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div className="text-xs text-slate-600 font-medium leading-relaxed neu-inset p-4 sm:p-5 rounded-2xl">
                     <span className="font-bold text-slate-800 block mb-1">Abstract:</span>
                     {paper.abstract}
-                  </p>
+                  </div>
                 )}
 
                 {paper.paperUrl && (
@@ -100,7 +100,7 @@ export default function ResearchPage() {
                       href={paper.paperUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-xs font-bold text-ieee-blue hover:text-ieee-dark"
+                      className="neu-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-ieee-blue hover:text-ieee-dark transition"
                     >
                       <span>Read Publication on IEEE Xplore / Journal</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -115,4 +115,3 @@ export default function ResearchPage() {
     </div>
   );
 }
-

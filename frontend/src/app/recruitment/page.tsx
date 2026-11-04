@@ -41,8 +41,8 @@ export default function RecruitmentPage() {
   const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState('');
   const [collegeId, setCollegeId] = useState('');
-  const [department, setDepartment] = useState('');
-  const [yearOfStudy, setYearOfStudy] = useState('');
+  const [department, setDepartment] = useState('Electronics and Communication Engineering (ECE)');
+  const [yearOfStudy, setYearOfStudy] = useState('1st Year');
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
   const [statementOfPurpose, setStatementOfPurpose] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');
@@ -89,7 +89,7 @@ export default function RecruitmentPage() {
   };
 
   return (
-    <div className="py-16 bg-slate-50 min-h-screen">
+    <div className="py-16 bg-[#e8edf5] min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badge="Join Our Community"
@@ -102,36 +102,36 @@ export default function RecruitmentPage() {
             <div className="w-8 h-8 border-4 border-ieee-blue border-t-transparent rounded-full animate-spin" />
           </div>
         ) : !isOpen ? (
-          <div className="bg-white rounded-3xl p-10 sm:p-14 border border-slate-200 text-center shadow-lg max-w-xl mx-auto space-y-6">
-            <div className="w-20 h-20 rounded-3xl bg-blue-50 text-ieee-blue flex items-center justify-center mx-auto shadow-sm">
-              <Bell className="w-10 h-10 animate-bounce" />
+          <div className="neu-card rounded-3xl p-10 sm:p-14 border border-white/70 text-center max-w-xl mx-auto space-y-6">
+            <div className="w-20 h-20 rounded-3xl bg-[#e8edf5] shadow-[inset_3px_3px_6px_#c4d0e0,inset_-3px_-3px_6px_#ffffff] text-ieee-blue flex items-center justify-center mx-auto">
+              <Bell className="w-10 h-10 animate-bounce text-ieee-blue" />
             </div>
 
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full inline-block mb-3 border border-amber-200">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 neu-pill px-3 py-1 inline-block mb-3">
                 Membership Drive Closed
               </span>
-              <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+              <h3 className="text-2xl font-extrabold text-slate-800 tracking-tight">
                 Recruitment Drive Currently Closed
               </h3>
             </div>
 
-            <p className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+            <p className="text-sm text-slate-600 font-medium leading-relaxed max-w-md mx-auto">
               You will be notified when the membership opportunity will be open for you all guys, till
               then keep an eye on your inbox.
             </p>
 
-            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="pt-6 border-t border-slate-300/40 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="/events"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+                className="w-full sm:w-auto neu-btn inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-slate-700 hover:text-ieee-blue transition"
               >
                 <Calendar className="w-4 h-4" />
                 Explore Upcoming Events
               </a>
               <a
                 href="/social"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-ieee-blue hover:bg-ieee-dark transition shadow-sm"
+                className="w-full sm:w-auto neu-btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-white transition"
               >
                 <Instagram className="w-4 h-4" />
                 Stay Updated on Social
@@ -139,52 +139,52 @@ export default function RecruitmentPage() {
             </div>
           </div>
         ) : submitted ? (
-          <div className="bg-white rounded-3xl p-12 border border-emerald-200 text-center shadow-md max-w-lg mx-auto">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 className="w-10 h-10" />
+          <div className="neu-card rounded-3xl p-12 border border-white/70 text-center max-w-lg mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-[#e8edf5] shadow-[inset_3px_3px_6px_#c4d0e0,inset_-3px_-3px_6px_#ffffff] text-emerald-600 flex items-center justify-center mx-auto mb-5">
+              <CheckCircle2 className="w-9 h-9" />
             </div>
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">
+            <h3 className="text-2xl font-extrabold text-slate-800 mb-2">
               Application Submitted Successfully!
             </h3>
-            <p className="text-xs text-slate-600 leading-relaxed mb-6">
+            <p className="text-xs text-slate-600 font-medium leading-relaxed mb-6">
               Thank you for applying to the IEEE Student Branch. Your application has been sent directly to
               the Membership Lead. Approved candidates will receive their official membership record and
               induction schedule via email.
             </p>
             <button
               onClick={() => setSubmitted(false)}
-              className="px-5 py-2 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+              className="neu-btn px-6 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:text-ieee-blue transition"
             >
               Submit Another Application
             </button>
           </div>
         ) : (
-          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm">
+          <div className="neu-card-lg rounded-3xl p-8 sm:p-12 border border-white/70">
             {/* Drive Details Header */}
-            <div className="mb-8 pb-6 border-b border-slate-100">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full inline-block mb-2">
+            <div className="mb-8 pb-6 border-b border-slate-300/40">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 neu-pill px-3 py-1 inline-block mb-3">
                 Active Induction Cycle {drive?.academicYear ? `(${drive.academicYear})` : ''}
               </span>
-              <h3 className="text-xl font-bold text-slate-900">{drive?.title}</h3>
+              <h3 className="text-xl font-extrabold text-slate-800">{drive?.title}</h3>
               {drive?.guidelines && (
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed bg-blue-50/60 p-4 rounded-xl border border-blue-100 text-slate-700">
+                <div className="text-xs text-slate-600 font-medium mt-3 leading-relaxed neu-inset p-4 sm:p-5 rounded-2xl">
                   <span className="font-bold text-ieee-blue block mb-1">Guidelines for Applicants:</span>
                   {drive.guidelines}
-                </p>
+                </div>
               )}
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-xl border border-red-200 text-xs flex items-center gap-2">
+              <div className="mb-6 p-4 neu-inset text-red-600 rounded-2xl text-xs flex items-center gap-2.5">
                 <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{error}</span>
+                <span className="font-medium">{error}</span>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                     Full Name *
                   </label>
                   <input
@@ -193,11 +193,11 @@ export default function RecruitmentPage() {
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Rahul Sharma"
                     required
-                    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                    className="w-full neu-inset rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                     Email Address *
                   </label>
                   <input
@@ -206,14 +206,14 @@ export default function RecruitmentPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="student@college.edu"
                     required
-                    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                    className="w-full neu-inset rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                     Phone / WhatsApp Number *
                   </label>
                   <input
@@ -222,11 +222,11 @@ export default function RecruitmentPage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 98765 43210"
                     required
-                    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                    className="w-full neu-inset rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                     College Roll No / Student ID *
                   </label>
                   <input
@@ -235,20 +235,20 @@ export default function RecruitmentPage() {
                     onChange={(e) => setCollegeId(e.target.value)}
                     placeholder="e.g. 2100290130001"
                     required
-                    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                    className="w-full neu-inset rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                     Department *
                   </label>
                   <select
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                    className="w-full neu-inset rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none"
                   >
                     <option value="Electronics and Communication Engineering (ECE)">
                       Electronics and Communication Engineering (ECE)
@@ -265,13 +265,13 @@ export default function RecruitmentPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                     Year of Study *
                   </label>
                   <select
                     value={yearOfStudy}
                     onChange={(e) => setYearOfStudy(e.target.value)}
-                    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                    className="w-full neu-inset rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none"
                   >
                     <option value="1st Year">1st Year (Fresher)</option>
                     <option value="2nd Year">2nd Year (Sophomore)</option>
@@ -283,34 +283,37 @@ export default function RecruitmentPage() {
 
               {/* Domain Interests */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
                   Areas of Interest / Desired Domains
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {DOMAINS.map((dom) => (
-                    <label
-                      key={dom}
-                      className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs cursor-pointer transition ${
-                        selectedDomains.includes(dom)
-                          ? 'bg-blue-50/80 border-ieee-blue text-ieee-blue font-bold'
-                          : 'border-slate-200 text-slate-700 hover:bg-slate-50'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedDomains.includes(dom)}
-                        onChange={() => toggleDomain(dom)}
-                        className="w-4 h-4 text-ieee-blue rounded border-slate-300 focus:ring-ieee-blue"
-                      />
-                      <span>{dom}</span>
-                    </label>
-                  ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {DOMAINS.map((dom) => {
+                    const isSelected = selectedDomains.includes(dom);
+                    return (
+                      <label
+                        key={dom}
+                        className={`flex items-center gap-3 p-3.5 rounded-2xl text-xs cursor-pointer transition-all ${
+                          isSelected
+                            ? 'neu-inset text-ieee-blue font-bold shadow-[inset_3px_3px_6px_#c4d0e0,inset_-3px_-3px_6px_#ffffff]'
+                            : 'neu-btn text-slate-700'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleDomain(dom)}
+                          className="w-4 h-4 text-ieee-blue rounded border-slate-300 focus:ring-ieee-blue"
+                        />
+                        <span>{dom}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Statement of Purpose */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                   Statement of Purpose / Why do you want to join IEEE?
                 </label>
                 <textarea
@@ -318,13 +321,13 @@ export default function RecruitmentPage() {
                   value={statementOfPurpose}
                   onChange={(e) => setStatementOfPurpose(e.target.value)}
                   placeholder="Tell us about your passions, past projects, what you hope to learn or contribute..."
-                  className="w-full border border-slate-300 rounded-xl p-3.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                  className="w-full neu-inset rounded-2xl p-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                 />
               </div>
 
               {/* Resume / Portfolio Link */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                   Resume or Portfolio Link (Google Drive / GitHub / LinkedIn)
                 </label>
                 <input
@@ -332,15 +335,15 @@ export default function RecruitmentPage() {
                   value={resumeUrl}
                   onChange={(e) => setResumeUrl(e.target.value)}
                   placeholder="https://drive.google.com/... or https://github.com/..."
-                  className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                  className="w-full neu-inset rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                 />
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex justify-end">
+              <div className="pt-6 border-t border-slate-300/40 flex justify-end">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-ieee-blue hover:bg-ieee-dark text-white rounded-xl text-sm font-bold shadow-md flex items-center justify-center gap-2 transition disabled:opacity-50"
+                  className="neu-btn-primary w-full sm:w-auto px-9 py-3.5 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition disabled:opacity-50"
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -357,4 +360,3 @@ export default function RecruitmentPage() {
     </div>
   );
 }
-

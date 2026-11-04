@@ -18,7 +18,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   return (
     <div className={`mb-12 ${centered ? 'text-center max-w-2xl mx-auto' : ''}`}>
       {badge && (
-        <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-blue-50 text-ieee-blue border border-blue-100 mb-3">
+        <span className="inline-block px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[#e8edf5] text-ieee-blue shadow-[3px_3px_6px_#c5d0e0,-3px_-3px_6px_#ffffff] border border-white/80 mb-3.5">
           {badge}
         </span>
       )}
@@ -28,12 +28,11 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         </h2>
       )}
       {subtitle && (
-        <p className="mt-3 text-sm text-slate-500 leading-relaxed">
+        <p className="mt-3 text-sm text-slate-600 leading-relaxed font-normal">
           {subtitle}
         </p>
       )}
-      <div className={`w-12 h-1 bg-ieee-cyan rounded-full mt-4 ${centered ? 'mx-auto' : ''}`} />
+      <div className={`w-14 h-1.5 bg-gradient-to-r from-ieee-blue to-ieee-cyan rounded-full mt-4 shadow-[2px_2px_4px_#c5d0e0] ${centered ? 'mx-auto' : ''}`} />
     </div>
   );
 };
-

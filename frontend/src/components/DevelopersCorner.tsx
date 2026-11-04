@@ -2,7 +2,7 @@
 
 import React from 'react';
 import useSWR from 'swr';
-import { Code2, Github, Linkedin, Globe, Sparkles } from 'lucide-react';
+import { Code2, Github, Linkedin, Globe } from 'lucide-react';
 import { fetcher } from '../lib/api';
 
 export const DevelopersCorner: React.FC = () => {
@@ -10,69 +10,81 @@ export const DevelopersCorner: React.FC = () => {
   const profiles = devRes?.data || [];
 
   if (!profiles || profiles.length === 0) {
-    return null; // Clean empty state or hidden if no developer profiles are configured
+    return null;
   }
 
   return (
-    <section className="py-16 bg-slate-900 text-white border-t border-slate-800 relative overflow-hidden">
-      <div className="absolute inset-0 bg-radial-gradient opacity-10 pointer-events-none" />
-
+    <section className="py-20 bg-[#e8edf5] border-t border-white/80 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-ieee-cyan backdrop-blur-sm mb-3">
-            <Code2 className="w-3.5 h-3.5" />
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#e8edf5] text-ieee-blue shadow-[3px_3px_6px_#c5d0e0,-3px_-3px_6px_#ffffff] border border-white/80 mb-3.5">
+            <Code2 className="w-4 h-4 text-ieee-blue" />
             <span>Engineering & Design Credits</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
             Developers Corner
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-slate-400">
+          <p className="mt-2 text-xs sm:text-sm text-slate-600">
             Engineered with modern architecture to grant the IEEE Student Branch full real-time autonomy.
           </p>
+          <div className="w-14 h-1.5 bg-gradient-to-r from-ieee-blue to-ieee-cyan rounded-full mt-4 mx-auto shadow-[2px_2px_4px_#c5d0e0]" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
           {profiles.map((dev: any) => (
             <div
               key={dev._id}
-              className="bg-slate-800/80 rounded-2xl p-6 border border-slate-700/80 backdrop-blur-sm shadow-xl flex flex-col justify-between hover:border-ieee-cyan/50 transition group"
+              className="p-6 rounded-3xl bg-[#e8edf5] shadow-[8px_8px_18px_#c5d0e0,-8px_-8px_18px_#ffffff] border border-white/80 flex flex-col justify-between hover:shadow-[10px_10px_22px_#c5d0e0,-10px_-10px_22px_#ffffff] transition-all group"
             >
               <div>
                 <div className="flex items-center gap-4 mb-4">
                   {dev.photoUrl ? (
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-700 shrink-0 border-2 border-ieee-cyan/30 shadow-md">
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#e8edf5] p-1 shadow-[inset_3px_3px_6px_#c5d0e0,inset_-3px_-3px_6px_#ffffff] shrink-0 border border-white/80">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={dev.photoUrl} alt={dev.name} className="w-full h-full object-cover" />
+                      <img src={dev.photoUrl} alt={dev.name} className="w-full h-full object-cover rounded-xl" />
                     </div>
                   ) : (
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-ieee-blue to-ieee-cyan text-white font-bold flex items-center justify-center shrink-0 text-xl shadow-md">
+                    <div className="w-16 h-16 rounded-2xl bg-[#e8edf5] shadow-[5px_5px_12px_#c5d0e0,-5px_-5px_12px_#ffffff] text-ieee-blue font-bold flex items-center justify-center shrink-0 text-xl border border-white/80">
                       {dev.name.charAt(0)}
                     </div>
                   )}
 
                   <div>
-                    <h3 className="text-base font-bold text-white group-hover:text-ieee-cyan transition">
+                    <h3 className="text-base font-bold text-slate-900 group-hover:text-ieee-blue transition">
                       {dev.name}
                     </h3>
-                    <p className="text-xs font-medium text-ieee-cyan">{dev.role}</p>
+                    <p className="text-xs font-semibold text-ieee-blue">{dev.role}</p>
                   </div>
                 </div>
 
-                {dev.story && (
-                  <p className="text-xs text-slate-300 leading-relaxed italic bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/40">
-                    &quot;{dev.story}&quot;
+                {dev.bio && (
+                  <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                    {dev.bio}
                   </p>
+                )}
+
+                {dev.techStack && dev.techStack.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-5">
+                    {dev.techStack.map((tech: string, i: number) => (
+                      <span
+                        key={i}
+                        className="px-2.5 py-1 text-[10px] font-semibold text-slate-700 rounded-lg bg-[#e8edf5] shadow-[inset_2px_2px_4px_#c5d0e0,inset_-2px_-2px_4px_#ffffff] border border-white/60"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 )}
               </div>
 
-              <div className="flex items-center gap-3 mt-5 pt-4 border-t border-slate-700/60 text-slate-400">
+              {/* Social links well */}
+              <div className="pt-4 border-t border-slate-300/40 flex items-center gap-2.5">
                 {dev.githubUrl && (
                   <a
                     href={dev.githubUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-2 rounded-lg bg-slate-900 hover:text-white hover:bg-slate-700 transition"
-                    title="GitHub"
+                    className="p-2 rounded-xl text-slate-600 hover:text-slate-900 bg-[#e8edf5] shadow-[3px_3px_6px_#c5d0e0,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#c5d0e0,inset_-2px_-2px_4px_#ffffff] border border-white/80 transition"
                   >
                     <Github className="w-4 h-4" />
                   </a>
@@ -82,8 +94,7 @@ export const DevelopersCorner: React.FC = () => {
                     href={dev.linkedinUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-2 rounded-lg bg-slate-900 hover:text-ieee-cyan hover:bg-slate-700 transition"
-                    title="LinkedIn"
+                    className="p-2 rounded-xl text-slate-600 hover:text-ieee-blue bg-[#e8edf5] shadow-[3px_3px_6px_#c5d0e0,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#c5d0e0,inset_-2px_-2px_4px_#ffffff] border border-white/80 transition"
                   >
                     <Linkedin className="w-4 h-4" />
                   </a>
@@ -93,8 +104,7 @@ export const DevelopersCorner: React.FC = () => {
                     href={dev.portfolioUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-2 rounded-lg bg-slate-900 hover:text-emerald-400 hover:bg-slate-700 transition"
-                    title="Portfolio"
+                    className="p-2 rounded-xl text-slate-600 hover:text-ieee-cyan bg-[#e8edf5] shadow-[3px_3px_6px_#c5d0e0,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#c5d0e0,inset_-2px_-2px_4px_#ffffff] border border-white/80 transition"
                   >
                     <Globe className="w-4 h-4" />
                   </a>
@@ -107,4 +117,3 @@ export const DevelopersCorner: React.FC = () => {
     </section>
   );
 };
-

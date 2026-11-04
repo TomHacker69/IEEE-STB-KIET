@@ -74,59 +74,61 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4">
-      <div className="max-w-md w-full bg-slate-800 rounded-2xl shadow-xl border border-slate-700 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-[#e8edf5] px-4">
+      <div className="max-w-md w-full neu-card-lg rounded-3xl p-8 sm:p-10 border border-white/80">
         <div className="text-center mb-8">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.jpg"
-            alt="IEEE Logo"
-            className="h-16 w-auto object-contain mx-auto mb-4 rounded-xl shadow-md border border-slate-700"
-          />
-          <h1 className="text-2xl font-bold text-white tracking-wide">IEEE STB Admin Portal</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <div className="inline-block p-2 neu-card-sm rounded-2xl mb-4 border border-white/70">
+            <img
+              src="/logo.jpg"
+              alt="IEEE Logo"
+              className="h-14 w-auto object-contain rounded-xl"
+            />
+          </div>
+          <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">IEEE STB Admin Portal</h1>
+          <p className="text-xs text-slate-500 font-medium mt-1">
             Sign in with Super Admin or Sub-Admin credentials
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-            <p className="text-xs text-red-300 leading-relaxed">{error}</p>
+          <div className="mb-6 p-4 rounded-2xl neu-inset text-red-600 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+            <p className="text-xs font-semibold leading-relaxed">{error}</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
               Email Address
             </label>
-            <div className="relative">
-              <Mail className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="relative neu-inset rounded-2xl">
+              <Mail className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@ieee.org"
                 required
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-11 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ieee-blue focus:border-transparent transition"
+                className="w-full bg-transparent pl-11 pr-4 py-3 rounded-2xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
               Password
             </label>
-            <div className="relative">
-              <Lock className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="relative neu-inset rounded-2xl">
+              <Lock className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
                 required
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-11 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ieee-blue focus:border-transparent transition"
+                className="w-full bg-transparent pl-11 pr-4 py-3 rounded-2xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
               />
             </div>
           </div>
@@ -134,7 +136,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full mt-2 bg-ieee-blue hover:bg-ieee-electric text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+            className="neu-btn-primary w-full mt-3 py-3.5 px-4 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 transition disabled:opacity-50"
           >
             {submitting ? (
               <>
@@ -147,16 +149,16 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="relative my-4 flex items-center justify-center">
-          <div className="border-t border-slate-700 w-full" />
-          <span className="bg-slate-800 px-3 text-[11px] text-slate-400 uppercase font-semibold">or</span>
+        <div className="relative my-6 flex items-center justify-center">
+          <div className="neu-inset h-[2px] w-full" />
+          <span className="bg-[#e8edf5] px-3 text-[10px] text-slate-400 uppercase font-bold absolute">or</span>
         </div>
 
         <button
           type="button"
           onClick={handleGoogleSignIn}
           disabled={googleLoading}
-          className="w-full bg-white hover:bg-slate-100 text-slate-800 font-semibold py-2.5 px-4 rounded-lg text-xs transition shadow flex items-center justify-center gap-2.5 disabled:opacity-50"
+          className="neu-btn w-full py-3 px-4 rounded-xl text-slate-700 font-bold text-xs transition flex items-center justify-center gap-2.5 disabled:opacity-50"
         >
           {googleLoading ? (
             <Loader2 className="w-4 h-4 animate-spin text-slate-600" />
@@ -186,4 +188,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
