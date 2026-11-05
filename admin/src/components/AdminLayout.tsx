@@ -187,11 +187,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs transition-all ${
-                    isActive
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs transition-all ${isActive
                       ? 'neu-inset text-ieee-blue font-extrabold shadow-[inset_3px_3px_6px_#c4d0e0,inset_-3px_-3px_6px_#ffffff]'
                       : 'text-slate-600 font-medium hover:neu-card-sm hover:text-slate-900'
-                  }`}
+                    }`}
                 >
                   <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-ieee-blue' : 'text-slate-500'}`} />
                   <span className="truncate">{item.label}</span>

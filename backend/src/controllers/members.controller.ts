@@ -13,8 +13,7 @@ export const getPublicMembers = async (req: Request, res: Response) => {
 
     const grouped = {
       core_team: members.filter((m) => m.tier === 'core_team'),
-      regular_member: members.filter((m) => m.tier === 'regular_member'),
-      content_member: members.filter((m) => m.tier === 'content_member'),
+      regular_member: members.filter((m) => m.tier === 'regular_member' || (m.tier as any) === 'content_member'),
     };
 
     return res.status(200).json({
@@ -70,9 +69,9 @@ export const createMember = async (req: AuthenticatedRequest, res: Response) => 
     const member = await Member.create({
       name: name.trim(),
       designation: designation.trim(),
-      tier: tier || 'regular_member',
+      tier: tier === 'core_team' ? 'core_team' : 'regular_member',
       photoUrl: photoUrl || '',
-      quote: tier === 'core_team' ? quote || '' : '', // quotes reserved for core team
+      quote: '', // Quotes are strictly reserved for Dignitaries
       email: email ? email.toLowerCase().trim() : '',
       department: department || '',
       membershipId: membershipId || '',
@@ -121,9 +120,9 @@ export const updateMember = async (req: AuthenticatedRequest, res: Response) => 
 
     if (name) member.name = name.trim();
     if (designation) member.designation = designation.trim();
-    if (tier) member.tier = tier;
+    if (tier) member.tier = tier === 'core_team' ? 'core_team' : 'regular_member';
     if (photoUrl !== undefined) member.photoUrl = photoUrl;
-    if (quote !== undefined) member.quote = tier === 'core_team' || member.tier === 'core_team' ? quote : '';
+    member.quote = ''; // Quotes are strictly reserved for Dignitaries
     if (email !== undefined) member.email = email.toLowerCase().trim();
     if (department !== undefined) member.department = department;
     if (membershipId !== undefined) member.membershipId = membershipId;
@@ -186,12 +185,9 @@ export const batchImportMembers = async (req: AuthenticatedRequest, res: Respons
 
       const email = item.email ? item.email.toLowerCase().trim() : '';
       const designation = item.designation ? item.designation.trim() : 'Member';
-      const tier =
-        item.tier && ['core_team', 'regular_member', 'content_member'].includes(item.tier)
-          ? item.tier
-          : 'regular_member';
+      const tier = item.tier === 'core_team' ? 'core_team' : 'regular_member';
       const department = item.department ? item.department.trim() : '';
-      const quote = tier === 'core_team' ? (item.quote || '').trim() : '';
+      const quote = ''; // Quotes are strictly reserved for Dignitaries
       const membershipId = item.membershipId
         ? item.membershipId.trim()
         : `IEEE-${Date.now().toString().slice(-6)}-${i + 1}`;

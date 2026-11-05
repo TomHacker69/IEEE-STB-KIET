@@ -3,7 +3,7 @@
 import React from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
-import { Users, Quote, Linkedin, Github, Mail, Award, ArrowRight } from 'lucide-react';
+import { Users, Linkedin, Github, Mail, Award, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react';
 import { fetcher } from '../../lib/api';
 import { SectionHeader } from '../../components/SectionHeader';
 import { EmptyState } from '../../components/EmptyState';
@@ -13,12 +13,14 @@ export default function TeamPage() {
   const grouped = membersRes?.grouped || {
     core_team: [],
     regular_member: [],
-    content_member: [],
   };
 
   const coreTeam = grouped.core_team || [];
-  const regularMembers = grouped.regular_member || [];
-  const contentTeam = grouped.content_member || [];
+  // Merge regular_member and any legacy content_member into regularMembers
+  const regularMembers = [
+    ...(grouped.regular_member || []),
+    ...(grouped.content_member || []),
+  ];
 
   return (
     <div className="py-16 bg-[#e8edf5] min-h-screen">
@@ -27,7 +29,7 @@ export default function TeamPage() {
           <SectionHeader
             badge="Student Leadership"
             title="Our Members & Executive Team"
-            subtitle="The passionate student engineers, researchers, and content creators leading the IEEE Student Branch."
+            subtitle="The passionate student engineers, researchers, and technical leaders driving the IEEE Student Branch."
           />
 
           {/* Institutional Dignitaries Banner Link */}
@@ -41,7 +43,7 @@ export default function TeamPage() {
                   Looking for our Institutional Dignitaries & Branch Counselor?
                 </p>
                 <p className="text-[11px] text-slate-500 font-medium">
-                  Institutional leadership and branch counselors are respectfully featured on the Home Page.
+                  Institutional leadership and branch counselors (with words of wisdom) are featured on the Home Page.
                 </p>
               </div>
             </div>
@@ -55,11 +57,14 @@ export default function TeamPage() {
           </div>
         </div>
 
-        {/* 1. CORE TEAM SECTION */}
+        {/* 1. EXECUTIVE CORE TEAM */}
         <section>
           <div className="flex items-center gap-3 mb-8">
             <div className="w-3 h-7 bg-gradient-to-b from-ieee-blue to-ieee-dark rounded-full shadow-[-2px_-2px_5px_#ffffff,2px_2px_5px_#c4d0e0]" />
-            <h3 className="text-xl font-extrabold text-slate-800">Executive Core Team</h3>
+            <div>
+              <h3 className="text-xl font-extrabold text-slate-800">Executive Core Team</h3>
+              <p className="text-xs text-slate-500 font-medium">Branch officers, coordinators, and domain leads</p>
+            </div>
           </div>
 
           {isLoading ? (
@@ -99,17 +104,13 @@ export default function TeamPage() {
                         <h4 className="text-base font-bold text-slate-800">{member.name}</h4>
                         <p className="text-xs font-bold text-ieee-blue">{member.designation}</p>
                         {member.department && (
-                          <p className="text-[11px] text-slate-500 font-medium">{member.department}</p>
+                          <p className="text-[11px] text-slate-500 font-medium mt-0.5">{member.department}</p>
                         )}
+                        <span className="inline-block mt-1.5 text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full neu-pill text-amber-700 bg-amber-50/50">
+                          ★ Core Member
+                        </span>
                       </div>
                     </div>
-
-                    {member.quote && (
-                      <div className="p-4 neu-inset rounded-2xl text-xs italic text-slate-600 flex items-start gap-2.5">
-                        <Quote className="w-4 h-4 text-ieee-blue shrink-0 mt-0.5" />
-                        <p className="leading-relaxed">&quot;{member.quote}&quot;</p>
-                      </div>
-                    )}
                   </div>
 
                   <div className="flex items-center gap-3 mt-6 pt-5 border-t border-slate-300/40">
@@ -148,16 +149,19 @@ export default function TeamPage() {
           )}
         </section>
 
-        {/* 2. REGULAR & CONTENT MEMBERS */}
-        {(regularMembers.length > 0 || contentTeam.length > 0) && (
+        {/* 2. REGULAR MEMBERS */}
+        {regularMembers.length > 0 && (
           <section className="pt-10 border-t border-slate-300/50">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-3 h-7 bg-gradient-to-b from-ieee-cyan to-ieee-blue rounded-full shadow-[-2px_-2px_5px_#ffffff,2px_2px_5px_#c4d0e0]" />
-              <h3 className="text-xl font-extrabold text-slate-800">General & Content Members</h3>
+              <div>
+                <h3 className="text-xl font-extrabold text-slate-800">Regular Members</h3>
+                <p className="text-xs text-slate-500 font-medium">Active student branch engineers and innovators</p>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-              {[...regularMembers, ...contentTeam].map((m: any) => (
+              {regularMembers.map((m: any) => (
                 <div
                   key={m._id}
                   className="neu-card-sm rounded-2xl p-5 border border-white/60 text-center flex flex-col items-center hover:shadow-[-6px_-6px_12px_#ffffff,6px_6px_12px_#c4d0e0] transition"

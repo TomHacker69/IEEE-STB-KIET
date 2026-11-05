@@ -10,13 +10,14 @@ import {
   Save,
   X,
   AlertCircle,
-  Quote,
   Linkedin,
   Github,
   Mail,
   UploadCloud,
   FileSpreadsheet,
   CheckCircle2,
+  Shield,
+  UserCheck,
 } from 'lucide-react';
 import { AdminLayout } from '../../components/AdminLayout';
 import { useAuth } from '../../context/AuthContext';
@@ -24,13 +25,14 @@ import { api } from '../../lib/api';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { EmptyState } from '../../components/EmptyState';
 
+export type MemberTier = 'core_team' | 'regular_member';
+
 interface MemberItem {
   _id: string;
   name: string;
   designation: string;
-  tier: 'core_team' | 'regular_member' | 'content_member';
+  tier: MemberTier;
   photoUrl: string;
-  quote?: string;
   email?: string;
   department?: string;
   membershipId?: string;
@@ -55,9 +57,8 @@ export default function MembersPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
-  const [tier, setTier] = useState<'core_team' | 'regular_member' | 'content_member'>('core_team');
+  const [tier, setTier] = useState<MemberTier>('core_team');
   const [photoUrl, setPhotoUrl] = useState('');
-  const [quote, setQuote] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
   const [membershipId, setMembershipId] = useState('');
@@ -106,22 +107,21 @@ export default function MembersPage() {
     for (let i = 0; i < lines.length; i++) {
       const parts = lines[i].split(',').map((p) => p.trim());
       if (parts.length >= 2) {
-        const [mName, mEmail, mDesignation, mDepartment, mTier, mQuote] = parts;
+        const [mName, mEmail, mDesignation, mDepartment, mTier] = parts;
         if (!mName || !mEmail) continue;
         membersToImport.push({
           name: mName,
           email: mEmail.toLowerCase(),
           designation: mDesignation || 'Member',
           department: mDepartment || 'Engineering',
-          tier: mTier === 'core_team' || mTier === 'content_member' ? mTier : 'regular_member',
-          quote: mQuote || '',
+          tier: mTier === 'core_team' ? 'core_team' : 'regular_member',
           orderIndex: i,
         });
       }
     }
 
     if (membersToImport.length === 0) {
-      alert('Could not parse any valid rows. Please follow format: Name, Email, Designation, Department, Tier, [Quote]');
+      alert('Could not parse any valid rows. Please follow format: Name, Email, Designation, Department, Tier (core_team / regular_member)');
       return;
     }
 
@@ -148,13 +148,15 @@ export default function MembersPage() {
     }
   };
 
+  // When clicking Add Member, automatically set the form tier to whichever tab is currently active
   const openCreateModal = () => {
     setEditingId(null);
     setName('');
     setDesignation('');
-    setTier('core_team');
+    // Automatically match the currently active tab if on regular_member or core_team
+    const initialTier: MemberTier = activeTier === 'regular_member' ? 'regular_member' : 'core_team';
+    setTier(initialTier);
     setPhotoUrl('');
-    setQuote('');
     setEmail('');
     setDepartment('ECE');
     setMembershipId('');
@@ -169,9 +171,8 @@ export default function MembersPage() {
     setEditingId(item._id);
     setName(item.name);
     setDesignation(item.designation);
-    setTier(item.tier);
+    setTier(item.tier === 'core_team' ? 'core_team' : 'regular_member');
     setPhotoUrl(item.photoUrl);
-    setQuote(item.quote || '');
     setEmail(item.email || '');
     setDepartment(item.department || '');
     setMembershipId(item.membershipId || '');
@@ -196,7 +197,6 @@ export default function MembersPage() {
         designation: designation.trim(),
         tier,
         photoUrl,
-        quote: tier === 'core_team' ? quote.trim() : '',
         email: email.trim(),
         department: department.trim(),
         membershipId: membershipId.trim(),
@@ -235,7 +235,13 @@ export default function MembersPage() {
   };
 
   const filteredMembers =
-    activeTier === 'all' ? members : members.filter((m) => m.tier === activeTier);
+    activeTier === 'all'
+      ? members
+      : members.filter((m) =>
+          activeTier === 'regular_member'
+            ? m.tier === 'regular_member' || (m.tier as any) === 'content_member'
+            : m.tier === activeTier
+        );
 
   return (
     <AdminLayout>
@@ -243,30 +249,30 @@ export default function MembersPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <h1 className="text-2xl font-extrabold text-slate-800 flex items-center gap-2.5">
               <Users className="w-6 h-6 text-ieee-blue" />
               Team & Members Directory
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
-              Manage Core Team, Regular Members, and Content Members. Quotes are exclusively supported for Core Team.
+            <p className="text-xs text-slate-500 font-medium mt-1">
+              Manage Core Team and Regular Members. (Quotes are exclusively reserved for Dignitaries).
             </p>
           </div>
 
           {(isSuperAdmin || hasPermission('members', 'create')) && (
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => {
                   setIsBatchModalOpen(true);
                   setBatchResult(null);
                 }}
-                className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-semibold border border-slate-300 shadow-sm transition"
+                className="neu-btn inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:text-ieee-blue transition"
               >
-                <UploadCloud className="w-4 h-4 text-slate-600" />
+                <UploadCloud className="w-4 h-4 text-slate-500" />
                 Batch Import Roster
               </button>
               <button
                 onClick={openCreateModal}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-ieee-blue hover:bg-ieee-dark text-white rounded-lg text-xs font-semibold shadow-sm transition"
+                className="neu-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white transition"
               >
                 <Plus className="w-4 h-4" />
                 Add Member
@@ -276,32 +282,33 @@ export default function MembersPage() {
         </div>
 
         {error && (
-          <div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 text-xs flex items-center gap-2">
+          <div className="p-4 neu-inset text-red-600 rounded-2xl text-xs flex items-center gap-2.5 font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Tier Filter Tabs */}
-        <div className="flex gap-2 border-b border-slate-200 pb-2">
-          {[
-            { key: 'all', label: 'All Members' },
-            { key: 'core_team', label: 'Core Team' },
-            { key: 'regular_member', label: 'Regular Members' },
-            { key: 'content_member', label: 'Content Team' },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTier(tab.key)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
-                activeTier === tab.key
-                  ? 'bg-ieee-blue text-white shadow-sm'
-                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        {/* Two-Tier Filter Tabs in Neumorphic Track */}
+        <div className="flex">
+          <div className="neu-inset p-1.5 rounded-2xl inline-flex gap-2">
+            {[
+              { key: 'all', label: 'All Members' },
+              { key: 'core_team', label: 'Core Team' },
+              { key: 'regular_member', label: 'Regular Members' },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTier(tab.key)}
+                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTier === tab.key
+                    ? 'neu-pill-active text-ieee-blue shadow-[inset_3px_3px_6px_#c4d0e0,inset_-3px_-3px_6px_#ffffff]'
+                    : 'neu-btn text-slate-600 hover:text-ieee-blue'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Member Grid */}
@@ -318,95 +325,156 @@ export default function MembersPage() {
             onAction={openCreateModal}
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredMembers.map((m) => (
-              <div
-                key={m._id}
-                className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between hover:border-slate-300 transition"
-              >
-                <div>
-                  <div className="flex items-center gap-4">
-                    {m.photoUrl ? (
-                      <div className="w-14 h-14 rounded-full overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={m.photoUrl} alt={m.name} className="w-full h-full object-cover" />
-                      </div>
-                    ) : (
-                      <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0 border border-slate-200">
-                        {m.name.charAt(0)}
-                      </div>
-                    )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredMembers.map((m) => {
+              const isCore = m.tier === 'core_team';
+              return (
+                <div
+                  key={m._id}
+                  className="neu-card rounded-3xl p-6 border border-white/60 flex flex-col justify-between hover:shadow-[-8px_-8px_16px_#ffffff,8px_8px_16px_#c4d0e0] transition-all duration-300"
+                >
+                  <div>
+                    <div className="flex items-center gap-4">
+                      {m.photoUrl ? (
+                        <div className="w-14 h-14 rounded-2xl p-1 neu-inset shrink-0 overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={m.photoUrl} alt={m.name} className="w-full h-full object-cover rounded-xl" />
+                        </div>
+                      ) : (
+                        <div className="w-14 h-14 rounded-2xl neu-inset text-ieee-blue font-bold flex items-center justify-center shrink-0 text-lg">
+                          {m.name.charAt(0)}
+                        </div>
+                      )}
 
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900">{m.name}</h3>
-                      <p className="text-xs font-semibold text-ieee-blue">{m.designation}</p>
-                      <span className="inline-block mt-1 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600">
-                        {m.tier.replace('_', ' ')}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-bold text-slate-800 truncate">{m.name}</h3>
+                        <p className="text-xs font-semibold text-ieee-blue truncate">{m.designation}</p>
+                        <span
+                          className={`inline-block mt-1 text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full ${
+                            isCore
+                              ? 'neu-pill text-amber-700 bg-amber-50/50'
+                              : 'neu-pill text-slate-600'
+                          }`}
+                        >
+                          {isCore ? '★ Core Member' : 'Regular Member'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-300/40 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                      <span>Dept: {m.department || 'ECE'}</span>
+                      <span className={m.isActive ? 'text-emerald-600 font-bold' : 'text-slate-400'}>
+                        {m.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
                   </div>
 
-                  {m.tier === 'core_team' && m.quote && (
-                    <div className="mt-3 p-2.5 bg-slate-50 rounded-lg text-xs italic text-slate-600 flex items-start gap-1.5">
-                      <Quote className="w-3 h-3 text-ieee-cyan shrink-0 mt-0.5" />
-                      <span>&quot;{m.quote}&quot;</span>
-                    </div>
-                  )}
-
-                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Dept: {m.department || 'ECE'}</span>
-                    <span className={m.isActive ? 'text-emerald-600 font-medium' : 'text-slate-400'}>
-                      {m.isActive ? 'Active' : 'Inactive'}
-                    </span>
+                  <div className="mt-5 pt-3 border-t border-slate-300/40 flex items-center justify-end gap-2.5">
+                    <button
+                      onClick={() => openEditModal(m)}
+                      className="neu-btn px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-ieee-blue rounded-xl transition flex items-center gap-1.5"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                      Edit
+                    </button>
+                    {(isSuperAdmin || hasPermission('members', 'delete')) && (
+                      <button
+                        onClick={() => handleDelete(m._id, m.name)}
+                        className="neu-btn p-2 text-slate-400 hover:text-red-600 rounded-xl transition"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
-                  <button
-                    onClick={() => openEditModal(m)}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition flex items-center gap-1.5"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                    Edit
-                  </button>
-                  {(isSuperAdmin || hasPermission('members', 'delete')) && (
-                    <button
-                      onClick={() => handleDelete(m._id, m.name)}
-                      className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
-        {/* Modal: Create/Edit Member */}
+        {/* Modal: Create/Edit Member with Adaptive Form Version Switcher */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden my-8">
-              <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-ieee-blue" />
-                  <h2 className="text-base font-bold text-slate-900">
-                    {editingId ? 'Edit Member Details' : 'Add New Member'}
-                  </h2>
+          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+            <div className="neu-card-lg rounded-3xl max-w-lg w-full border border-white/80 overflow-hidden my-8 bg-[#e8edf5]">
+              <div className="px-6 py-4 border-b border-slate-300/40 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl neu-card-sm flex items-center justify-center text-ieee-blue">
+                    <Users className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-extrabold text-slate-800">
+                      {editingId ? 'Edit Member Details' : 'Add New Member'}
+                    </h2>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Configure member profile and portal access
+                    </p>
+                  </div>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition"
+                  className="neu-btn p-2 rounded-xl text-slate-400 hover:text-slate-700 transition"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
+              </div>
+
+              {/* Form Version Switcher: Core Member vs Regular Member */}
+              <div className="p-6 pb-0">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  Select Member Classification
+                </label>
+                <div className="neu-inset p-1.5 rounded-2xl flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setTier('core_team')}
+                    className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                      tier === 'core_team'
+                        ? 'neu-pill-active text-amber-800 shadow-[inset_3px_3px_6px_#c4d0e0,inset_-3px_-3px_6px_#ffffff]'
+                        : 'neu-btn text-slate-600 hover:text-amber-800'
+                    }`}
+                  >
+                    <Shield className="w-4 h-4 text-amber-600" />
+                    <span>★ Core Member</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTier('regular_member')}
+                    className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                      tier === 'regular_member'
+                        ? 'neu-pill-active text-ieee-blue shadow-[inset_3px_3px_6px_#c4d0e0,inset_-3px_-3px_6px_#ffffff]'
+                        : 'neu-btn text-slate-600 hover:text-ieee-blue'
+                    }`}
+                  >
+                    <UserCheck className="w-4 h-4 text-ieee-blue" />
+                    <span>● Regular Member</span>
+                  </button>
+                </div>
+
+                {/* Adaptive Version Indicator */}
+                <div className="mt-3 p-3 neu-card-sm rounded-xl border border-white/60 flex items-center gap-2 text-xs">
+                  {tier === 'core_team' ? (
+                    <>
+                      <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                      <span className="text-amber-900 font-bold">
+                        Core Council Form: Elevated executive member featured in leadership directory.
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="w-2 h-2 rounded-full bg-ieee-blue shrink-0" />
+                      <span className="text-slate-700 font-bold">
+                        Regular Member Form: Standard student branch member with portal verification.
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
 
               <form onSubmit={handleSave} className="p-6 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                       Full Name *
                     </label>
                     <input
@@ -415,51 +483,39 @@ export default function MembersPage() {
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Ankit Sharma"
                       required
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                      className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                       Designation *
                     </label>
                     <input
                       type="text"
                       value={designation}
                       onChange={(e) => setDesignation(e.target.value)}
-                      placeholder="e.g. Chairperson, Webmaster"
+                      placeholder={
+                        tier === 'core_team'
+                          ? 'e.g. Chairperson, Webmaster, Technical Lead'
+                          : 'e.g. Student Member, Associate, Volunteer'
+                      }
                       required
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                      className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                      Member Tier *
-                    </label>
-                    <select
-                      value={tier}
-                      onChange={(e) => setTier(e.target.value as any)}
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
-                    >
-                      <option value="core_team">Core Team (Quotes Enabled)</option>
-                      <option value="regular_member">Regular Member</option>
-                      <option value="content_member">Content Team Member</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                      Department
-                    </label>
-                    <input
-                      type="text"
-                      value={department}
-                      onChange={(e) => setDepartment(e.target.value)}
-                      placeholder="e.g. ECE / Electronics"
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Department
+                  </label>
+                  <input
+                    type="text"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    placeholder="e.g. Electronics and Communication Engineering (ECE)"
+                    className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
+                  />
                 </div>
 
                 <ImageUploadField
@@ -469,26 +525,10 @@ export default function MembersPage() {
                   folder="members"
                 />
 
-                {tier === 'core_team' && (
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                      Quote on IEEE (Core Team Exclusive)
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={quote}
-                      onChange={(e) => setQuote(e.target.value)}
-                      placeholder="e.g. IEEE gives students hands-on leadership and technical growth."
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
-                    />
-                  </div>
-                )}
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1 flex items-center justify-between">
-                      <span>Email Address *</span>
-                      <span className="text-[10px] text-ieee-blue font-semibold">Portal Login Verification</span>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                      Email Address *
                     </label>
                     <input
                       type="email"
@@ -496,14 +536,14 @@ export default function MembersPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="student@college.edu"
                       required
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                      className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                     />
-                    <p className="text-[11px] text-slate-500 mt-1">
-                      Required for login access to the Member Portal. Only emails in this directory can sign in.
+                    <p className="text-[10px] text-slate-500 font-medium mt-1">
+                      Enables secure login to the Member Dashboard.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                       IEEE Member ID
                     </label>
                     <input
@@ -511,14 +551,14 @@ export default function MembersPage() {
                       value={membershipId}
                       onChange={(e) => setMembershipId(e.target.value)}
                       placeholder="e.g. 98765432"
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                      className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                       LinkedIn Profile URL
                     </label>
                     <input
@@ -526,11 +566,11 @@ export default function MembersPage() {
                       value={linkedin}
                       onChange={(e) => setLinkedin(e.target.value)}
                       placeholder="https://linkedin.com/in/..."
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                      className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                       GitHub Profile URL
                     </label>
                     <input
@@ -538,21 +578,21 @@ export default function MembersPage() {
                       value={github}
                       onChange={(e) => setGithub(e.target.value)}
                       placeholder="https://github.com/..."
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                      className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                      Order / Priority
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                      Order / Priority Index
                     </label>
                     <input
                       type="number"
                       value={orderIndex}
                       onChange={(e) => setOrderIndex(Number(e.target.value))}
-                      className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                      className="w-full neu-inset rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none"
                     />
                   </div>
                   <div className="flex items-center gap-2 pt-6">
@@ -563,31 +603,31 @@ export default function MembersPage() {
                       onChange={(e) => setIsActive(e.target.checked)}
                       className="w-4 h-4 text-ieee-blue rounded border-slate-300 focus:ring-ieee-blue"
                     />
-                    <label htmlFor="isActiveMemberCheck" className="text-xs font-semibold text-slate-700">
+                    <label htmlFor="isActiveMemberCheck" className="text-xs font-bold text-slate-700 cursor-pointer">
                       Active Member
                     </label>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
+                <div className="pt-4 border-t border-slate-300/40 flex items-center justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
+                    className="neu-btn px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-5 py-2 bg-ieee-blue hover:bg-ieee-dark text-white rounded-lg text-xs font-semibold shadow flex items-center gap-2 transition disabled:opacity-50"
+                    className="neu-btn-primary px-6 py-2.5 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition disabled:opacity-50"
                   >
                     {submitting ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       <Save className="w-4 h-4" />
                     )}
-                    <span>Save Member</span>
+                    <span>Save {tier === 'core_team' ? 'Core Member' : 'Regular Member'}</span>
                   </button>
                 </div>
               </form>
@@ -597,46 +637,44 @@ export default function MembersPage() {
 
         {/* Batch Import Modal */}
         {isBatchModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 p-6 sm:p-8">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+            <div className="neu-card-lg rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/80 p-6 sm:p-8 bg-[#e8edf5]">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-300/40">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-ieee-blue flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl neu-card-sm flex items-center justify-center text-ieee-blue">
                     <FileSpreadsheet className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900">Batch Import IEEE Roster</h3>
-                    <p className="text-xs text-slate-500">
-                      Import multiple members at once (Name, Email, Designation, Department, Tier)
+                    <h3 className="text-lg font-extrabold text-slate-800">Batch Import IEEE Roster</h3>
+                    <p className="text-xs text-slate-500 font-medium">
+                      Import multiple members at once (Core or Regular)
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsBatchModalOpen(false)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+                  className="neu-btn p-2 rounded-xl text-slate-400 hover:text-slate-700 transition"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="my-5 space-y-4">
-                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs text-slate-700">
+                <div className="p-4 neu-inset rounded-2xl space-y-2 text-xs text-slate-700">
                   <span className="font-bold text-slate-800">CSV Row Format (One member per line):</span>
-                  <code className="block bg-white p-2.5 rounded border border-slate-200 font-mono text-[11px] text-slate-800">
-                    FullName, Email, Designation, Department, Tier, [Quote]
+                  <code className="block bg-[#e8edf5] p-2.5 rounded-xl neu-inset font-mono text-[11px] text-slate-800">
+                    FullName, Email, Designation, Department, Tier
                   </code>
-                  <p className="text-[11px] text-slate-500">
-                    * Tier must be: <code>core_team</code>, <code>regular_member</code>, or <code>content_member</code>.<br />
-                    * Quotes are reserved for <code>core_team</code>. Registered emails are automatically authorized to log into the Member Portal.
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    * Tier must be: <code>core_team</code> or <code>regular_member</code>.<br />
+                    * Registered emails are automatically authorized to log into the Member Portal.
                   </p>
                 </div>
 
                 {batchResult && (
                   <div
-                    className={`p-4 rounded-xl border text-xs flex items-center gap-2 ${
-                      batchResult.success
-                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                        : 'bg-red-50 text-red-800 border-red-200'
+                    className={`p-4 rounded-2xl neu-inset text-xs flex items-center gap-2 font-medium ${
+                      batchResult.success ? 'text-emerald-800' : 'text-red-700'
                     }`}
                   >
                     {batchResult.success ? (
@@ -649,24 +687,24 @@ export default function MembersPage() {
                 )}
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                     Member Data Rows (One per line)
                   </label>
                   <textarea
-                    rows={12}
+                    rows={10}
                     value={batchRawText}
                     onChange={(e) => setBatchRawText(e.target.value)}
-                    placeholder="FullName, Email, Designation, Department, Tier, [Quote]&#10;FullName, Email, Designation, Department, Tier"
-                    className="w-full border border-slate-300 rounded-xl p-3 font-mono text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-ieee-blue"
+                    placeholder="FullName, Email, Designation, Department, Tier&#10;Aarav Verma, aarav@kiet.edu, Technical Lead, ECE, core_team&#10;Riya Sharma, riya@kiet.edu, Member, CSE, regular_member"
+                    className="w-full neu-inset rounded-2xl p-4 font-mono text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-300/40">
                 <button
                   type="button"
                   onClick={() => setIsBatchModalOpen(false)}
-                  className="px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
+                  className="neu-btn px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition"
                 >
                   Cancel
                 </button>
@@ -674,7 +712,7 @@ export default function MembersPage() {
                   type="button"
                   onClick={handleBatchImport}
                   disabled={batchImporting || !batchRawText.trim()}
-                  className="px-5 py-2 bg-ieee-blue hover:bg-ieee-dark text-white rounded-lg text-xs font-semibold shadow flex items-center gap-2 transition disabled:opacity-50"
+                  className="neu-btn-primary px-6 py-2.5 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition disabled:opacity-50"
                 >
                   {batchImporting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -691,4 +729,3 @@ export default function MembersPage() {
     </AdminLayout>
   );
 }
-
